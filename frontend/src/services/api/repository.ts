@@ -7,7 +7,7 @@ import type {
   ModuleId,
 } from './types';
 
-export interface CyberScholarRepository {
+export interface EZScholarRepository {
   getDashboard(): Promise<DashboardDTO>;
   getModuleDetail(moduleId: ModuleId): Promise<ModuleDetailDTO>;
   getActivityEvents(): Promise<ActivityEventDTO[]>;

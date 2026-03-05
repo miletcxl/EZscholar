@@ -1,4 +1,4 @@
-import type { CyberScholarRepository } from './repository';
+import type { EZScholarRepository } from './repository';
 import { mockRepository } from '../mock/mockRepository';
 
-export const cyberScholarRepository: CyberScholarRepository = mockRepository;
+export const ezScholarRepository: EZScholarRepository = mockRepository;

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, type KeyboardEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search } from 'lucide-react';
 import {
@@ -31,6 +31,12 @@ export function CommandPalette() {
   const [search, setSearch] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
 
+  function handleClose() {
+    setSearch('');
+    setSelectedIndex(0);
+    close();
+  }
+
   const filteredActions = useMemo(() => {
     if (!data) {
       return [];
@@ -48,18 +54,12 @@ export function CommandPalette() {
 
   useEffect(() => {
     if (!isOpen) {
-      setSearch('');
-      setSelectedIndex(0);
       return;
     }
 
     const input = document.getElementById('command-search') as HTMLInputElement | null;
     input?.focus();
   }, [isOpen]);
-
-  useEffect(() => {
-    setSelectedIndex(0);
-  }, [search]);
 
   if (!isOpen) {
     return null;
@@ -78,12 +78,12 @@ export function CommandPalette() {
       tone: result.ok ? 'success' : 'error',
       title: result.message,
     });
-    close();
+    handleClose();
   }
 
-  async function onListKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
+  async function onListKeyDown(event: KeyboardEvent<HTMLInputElement>) {
     if (event.key === 'Escape') {
-      close();
+      handleClose();
       return;
     }
 
@@ -104,7 +104,7 @@ export function CommandPalette() {
   }
 
   return (
-    <div className="command-palette-backdrop" role="presentation" onClick={close}>
+    <div className="command-palette-backdrop" role="presentation" onClick={handleClose}>
       <section
         className="command-palette"
         role="dialog"
@@ -119,7 +119,10 @@ export function CommandPalette() {
             type="text"
             placeholder="搜索页面或动作..."
             value={search}
-            onChange={(event) => setSearch(event.target.value)}
+            onChange={(event) => {
+              setSearch(event.target.value);
+              setSelectedIndex(0);
+            }}
             onKeyDown={onListKeyDown}
           />
         </div>

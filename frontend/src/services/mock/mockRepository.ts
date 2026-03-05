@@ -1,4 +1,4 @@
-import type { CyberScholarRepository } from '../api/repository';
+import type { EZScholarRepository } from '../api/repository';
 import type {
   ActivityEventDTO,
   CommandActionDTO,
@@ -55,7 +55,7 @@ function shouldFail(key: string): boolean {
   return window.localStorage.getItem(`mock:error:${key}`) === '1';
 }
 
-export const mockRepository: CyberScholarRepository = {
+export const mockRepository: EZScholarRepository = {
   async getDashboard(): Promise<DashboardDTO> {
     if (shouldFail('dashboard')) {
       throw new Error('Dashboard mock error');

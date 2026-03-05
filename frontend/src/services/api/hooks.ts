@@ -1,33 +1,33 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { cyberScholarRepository } from './client';
+import { ezScholarRepository } from './client';
 import { queryKeys } from './queryKeys';
 import type { ModuleId } from './types';
 
 export function useDashboardQuery() {
   return useQuery({
     queryKey: queryKeys.dashboard,
-    queryFn: () => cyberScholarRepository.getDashboard(),
+    queryFn: () => ezScholarRepository.getDashboard(),
   });
 }
 
 export function useModuleDetailQuery(moduleId: ModuleId) {
   return useQuery({
     queryKey: queryKeys.moduleDetail(moduleId),
-    queryFn: () => cyberScholarRepository.getModuleDetail(moduleId),
+    queryFn: () => ezScholarRepository.getModuleDetail(moduleId),
   });
 }
 
 export function useActivitiesQuery() {
   return useQuery({
     queryKey: queryKeys.activities,
-    queryFn: () => cyberScholarRepository.getActivityEvents(),
+    queryFn: () => ezScholarRepository.getActivityEvents(),
   });
 }
 
 export function useCommandActionsQuery() {
   return useQuery({
     queryKey: queryKeys.commandActions,
-    queryFn: () => cyberScholarRepository.getCommandActions(),
+    queryFn: () => ezScholarRepository.getCommandActions(),
   });
 }
 
@@ -35,7 +35,7 @@ export function useExecuteCommandMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (actionId: string) => cyberScholarRepository.executeCommand(actionId),
+    mutationFn: (actionId: string) => ezScholarRepository.executeCommand(actionId),
     onSuccess: async () => {
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: queryKeys.dashboard }),

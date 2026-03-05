@@ -22,7 +22,7 @@ export function Sidebar() {
       <div className="workspace-head">
         <div className="workspace-avatar">CS</div>
         <div>
-          <p className="workspace-label">Cyber Scholar</p>
+          <p className="workspace-label">EZscholar</p>
           <p className="workspace-sub">学术控制台</p>
         </div>
       </div>
