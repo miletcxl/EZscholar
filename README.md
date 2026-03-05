@@ -2,6 +2,8 @@
 
 # EZscholar
 
+<img src="./docs/images/EZ_with_sch.png" alt="EZscholar Banner" width="780" />
+
 一个面向高校与科研场景的本地化「EZscholar 学术助手」，帮助你把“任务管理、远程算力、健康节律、报告产出、文献检索、启发式学习”整合到一个控制台里。
 
 ![Vite](https://img.shields.io/badge/Vite-6.4-646CFF?logo=vite&logoColor=white)

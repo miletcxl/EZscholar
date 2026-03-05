@@ -20,7 +20,9 @@ export function Sidebar() {
   return (
     <aside className="sidebar">
       <div className="workspace-head">
-        <div className="workspace-avatar">CS</div>
+        <div className="workspace-avatar">
+          <img src="/EZscholar.png" alt="EZscholar Logo" className="workspace-avatar-image" />
+        </div>
         <div>
           <p className="workspace-label">EZscholar</p>
           <p className="workspace-sub">学术控制台</p>
