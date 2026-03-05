@@ -63,7 +63,7 @@ EZscholar 的目标是把这些高频痛点收束成一个统一工作流。
 
 | 深色 Dark | 浅色 Light |
 | --- | --- |
-| ![ChatDark](./docs/images/chat-dark.png) | ![ChatLight](./docs/images/chat-light.png) |
+| ![ChatDark](./docs/images/chat-dark-latest.png) | ![ChatLight](./docs/images/chat-light-latest.png) |
 
 ### 日程引擎
 

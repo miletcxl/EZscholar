@@ -63,7 +63,7 @@ The repository currently ships a frontend console (React + TypeScript + Vite) wi
 
 | Dark | Light |
 | --- | --- |
-| ![ChatDark](./docs/images/chat-dark.png) | ![ChatLight](./docs/images/chat-light.png) |
+| ![ChatDark](./docs/images/chat-dark-latest.png) | ![ChatLight](./docs/images/chat-light-latest.png) |
 
 ### Deadline Engine (Real Implementation, Dark/Light)
 
