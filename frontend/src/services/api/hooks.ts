@@ -1,0 +1,46 @@
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { cyberScholarRepository } from './client';
+import { queryKeys } from './queryKeys';
+import type { ModuleId } from './types';
+
+export function useDashboardQuery() {
+  return useQuery({
+    queryKey: queryKeys.dashboard,
+    queryFn: () => cyberScholarRepository.getDashboard(),
+  });
+}
+
+export function useModuleDetailQuery(moduleId: ModuleId) {
+  return useQuery({
+    queryKey: queryKeys.moduleDetail(moduleId),
+    queryFn: () => cyberScholarRepository.getModuleDetail(moduleId),
+  });
+}
+
+export function useActivitiesQuery() {
+  return useQuery({
+    queryKey: queryKeys.activities,
+    queryFn: () => cyberScholarRepository.getActivityEvents(),
+  });
+}
+
+export function useCommandActionsQuery() {
+  return useQuery({
+    queryKey: queryKeys.commandActions,
+    queryFn: () => cyberScholarRepository.getCommandActions(),
+  });
+}
+
+export function useExecuteCommandMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (actionId: string) => cyberScholarRepository.executeCommand(actionId),
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: queryKeys.dashboard }),
+        queryClient.invalidateQueries({ queryKey: queryKeys.activities }),
+      ]);
+    },
+  });
+}
