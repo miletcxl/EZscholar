@@ -59,11 +59,17 @@ EZscholar 的目标是把这些高频痛点收束成一个统一工作流。
 
 ## 界面预览
 
-### 总览页（/overview，深浅色对比）
+### 总览页
 
 | 深色 Dark | 浅色 Light |
 | --- | --- |
 | ![OverviewDark](./docs/images/overview-dark.png) | ![OverviewLight](./docs/images/overview-light.png) |
+
+### 日程引擎
+
+| 深色 Dark | 浅色 Light |
+| --- | --- |
+| ![DeadlineEngineDark](./docs/images/deadline-engine-dark.png) | ![DeadlineEngineLight](./docs/images/deadline-engine-light.png) |
 
 ---
 
@@ -131,7 +137,6 @@ npm run test:e2e
 UniHelperCode/
 ├── README.md
 ├── README.zh-CN.md
-├── README.en.md
 ├── docs/images/                 # README 截图资源
 └── frontend/
     ├── src/
