@@ -11,7 +11,14 @@
 
 </div>
 
-<p align="center"><strong>语言 / Language：</strong>简体中文 | <a href="./README.en.md">English</a></p>
+<table align="center">
+  <tr>
+    <td align="center">
+      <strong>语言 / Language</strong><br/>
+      <a href="./README.md">English (Default)</a> · 简体中文
+    </td>
+  </tr>
+</table>
 
 ---
 
@@ -52,13 +59,11 @@ EZscholar 的目标是把这些高频痛点收束成一个统一工作流。
 
 ## 界面预览
 
-### 总览页（/overview）
+### 总览页（/overview，深浅色对比）
 
-![Dashboard](./docs/images/dashboard.png)
-
-### 模块详情（Research Brain）
-
-![ResearchBrain](./docs/images/research-brain.png)
+| 深色 Dark | 浅色 Light |
+| --- | --- |
+| ![OverviewDark](./docs/images/overview-dark.png) | ![OverviewLight](./docs/images/overview-light.png) |
 
 ---
 

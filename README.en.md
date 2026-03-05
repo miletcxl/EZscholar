@@ -11,7 +11,14 @@ A localized academic productivity assistant for university and research workflow
 
 </div>
 
-<p align="center"><strong>Language / 语言：</strong><a href="./README.zh-CN.md">简体中文</a> | English</p>
+<table align="center">
+  <tr>
+    <td align="center">
+      <strong>Language / 语言</strong><br/>
+      <a href="./README.md">English (Default)</a> · <a href="./README.zh-CN.md">简体中文</a>
+    </td>
+  </tr>
+</table>
 
 ---
 
@@ -52,13 +59,17 @@ The repository currently ships a frontend console (React + TypeScript + Vite) wi
 
 ## UI Preview
 
-### Overview Page (`/overview`)
+### Overview Page (`/overview`, Dark/Light)
 
-![Dashboard](./docs/images/dashboard.png)
+| Dark | Light |
+| --- | --- |
+| ![OverviewDark](./docs/images/overview-dark.png) | ![OverviewLight](./docs/images/overview-light.png) |
 
-### Module Detail (Research Brain)
+### Deadline Engine (Real Implementation, Dark/Light)
 
-![ResearchBrain](./docs/images/research-brain.png)
+| Dark | Light |
+| --- | --- |
+| ![DeadlineEngineDark](./docs/images/deadline-engine-dark.png) | ![DeadlineEngineLight](./docs/images/deadline-engine-light.png) |
 
 ---
 
