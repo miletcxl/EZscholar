@@ -30,22 +30,27 @@ EZscholar 的目标是把这些高频痛点收束成一个统一工作流。
 
 ## 当前功能
 
-目前仓库已落地前端控制台（Notion 风格桌面端），并提供 mock-first 数据流：
+目前仓库已落地前端控制台（React + TypeScript + Vite），核心功能包括：
 
-- `Deadline Engine`：DDL 倒推与风险预警视图
-- `Remote Dispatcher`：跨端同步与会话监控视图
-- `Flow Guardian`：专注/休息状态与事件回放
-- `Output Generator`：报告流水线指标与执行历史
-- `Research Brain`：文献解析与检索追踪面板
-- `Socratic Interceptor`：启发式拦截模式状态
-- 全局命令面板：`Ctrl/Cmd + K`（导航 + 模拟动作）
-- 活动时间线：统一事件流展示
+- 路由与页面：
+  - `/`：`AI 对话`（Chat，默认首页）
+  - `/overview`：总览页（最近访问 + 今日活动 + 六大模块卡片）
+  - `/activity`：活动时间线
+  - `/settings`：系统设置（主题、Provider、Workspace）
+  - `/modules/*`：模块详情（Deadline / Remote / Flow / Output / Research / Socratic）
+- AI 对话（Agentic Chat）：
+  - 支持 OpenAI compatible Chat Completions
+  - 已接入函数调用工具：`schedule_reminder` / `list_reminders` / `cancel_reminder`
+  - 对话内可展示工具执行卡片，提醒触发可落到本地通知与 Toast
+- 命令面板：`Ctrl/Cmd + K`，支持导航与模拟动作
+- 主题系统：深浅色主题切换，浅色模式下导航与正文对比度已优化
+- 数据层：当前为 mock-first（便于先行联调与界面迭代）
 
 ---
 
 ## 界面预览
 
-### 首页总览
+### 总览页（/overview）
 
 ![Dashboard](./docs/images/dashboard.png)
 
@@ -64,7 +69,23 @@ cd frontend
 npm install
 ```
 
-### 2. 本地启动
+### 2. （可选）配置本地环境变量
+
+在 `frontend/.env.local` 中按需配置：
+
+```bash
+VITE_LOCAL_API_BASE_URL=http://127.0.0.1:8045/v1
+VITE_LOCAL_API_KEY=
+VITE_LOCAL_MODEL=gemini-3-flash
+
+VITE_QWEN_API_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
+VITE_QWEN_API_KEY=
+VITE_QWEN_MODEL=qwen-plus
+```
+
+注意：`.env.local` 已被忽略，不会提交到 Git。请不要把真实密钥写进源码或 README。
+
+### 3. 本地启动
 
 ```bash
 npm run dev
@@ -74,7 +95,7 @@ npm run dev
 
 - `http://127.0.0.1:5173`
 
-### 3. 生产预览
+### 4. 生产预览
 
 ```bash
 npm run build
@@ -107,10 +128,10 @@ UniHelperCode/
     ├── src/
     │   ├── app/                 # 路由、导航、QueryClient
     │   ├── layouts/             # AppShell / Sidebar / TopHeader
-    │   ├── pages/               # Dashboard / Activity / Settings / ModuleDetail
-    │   ├── features/            # dashboard / modules / command-palette
-    │   ├── services/            # api 合同 + mock repository
-    │   ├── stores/              # Zustand 全局 UI 状态
+    │   ├── pages/               # Chat / Overview / Activity / Settings / ModuleDetail
+    │   ├── features/            # dashboard / settings / modules / command-palette
+    │   ├── services/            # api mock + llm + agent tools + notifier
+    │   ├── stores/              # UI / LLM / Chat / Notifier / Workspace
     │   └── styles/              # token + 组件样式
     ├── e2e/                     # Playwright 用例
     └── vitest.config.ts
@@ -120,11 +141,10 @@ UniHelperCode/
 
 ## 使用说明（最短路径）
 
-1. 启动前端后进入首页，先看“最近访问 + 六大能力卡片 + 活动时间线”。
-2. 点击任意能力卡片进入详情页，查看指标、能力标签和最近执行记录。
-3. 按 `Ctrl/Cmd + K` 打开命令面板：
-   - 输入模块名可快速跳转
-   - 输入“模拟”可触发 mock 动作并写入时间线
+1. 启动后默认进入 `AI 对话`（`/`），先在设置页配置可用 LLM Provider。
+2. 在对话页尝试“X 分钟后提醒我做 Y”，验证工具调用与本地提醒链路。
+3. 打开 `/overview` 查看总览卡片与近期活动，再进入各模块详情页查看指标与执行记录。
+4. 按 `Ctrl/Cmd + K` 打开命令面板，快速导航或触发模拟动作。
 
 ---
 
@@ -132,7 +152,8 @@ UniHelperCode/
 
 - 接入真实后端 API（保留 mock fallback）
 - 增加模块级别实时状态订阅（WebSocket/SSE）
-- 提供亮色主题与中英双语
+- 增加提醒数据与对话历史持久化
+- 提供中英双语
 - 输出报告与文献能力的端到端联调
 
 ---
