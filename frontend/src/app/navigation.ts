@@ -6,7 +6,8 @@ import {
   Cog,
   Database,
   HeartPulse,
-  House,
+  LayoutDashboard,
+  MessageSquare,
   ShieldQuestion,
   TerminalSquare,
 } from 'lucide-react';
@@ -27,45 +28,47 @@ export interface ModuleNavItem {
 }
 
 export const mainNavItems: NavItem[] = [
-  { id: 'home', label: '首页总览', path: '/', icon: House },
+  { id: 'chat', label: 'AI 对话', path: '/', icon: MessageSquare },
+  { id: 'overview', label: '总览', path: '/overview', icon: LayoutDashboard },
   { id: 'activity', label: '活动时间线', path: '/activity', icon: Activity },
   { id: 'settings', label: '设置', path: '/settings', icon: Cog },
 ];
 
+
 export const moduleNavItems: ModuleNavItem[] = [
   {
     id: 'deadline-engine',
-    label: 'Deadline Engine',
+    label: '日程引擎',
     path: '/modules/deadline-engine',
     icon: CalendarClock,
   },
   {
     id: 'remote-dispatcher',
-    label: 'Remote Dispatcher',
+    label: '算力调度',
     path: '/modules/remote-dispatcher',
     icon: TerminalSquare,
   },
   {
     id: 'flow-guardian',
-    label: 'Flow Guardian',
+    label: '心流守护',
     path: '/modules/flow-guardian',
     icon: HeartPulse,
   },
   {
     id: 'output-generator',
-    label: 'Output Generator',
+    label: '文档生成',
     path: '/modules/output-generator',
     icon: Database,
   },
   {
     id: 'research-brain',
-    label: 'Research Brain',
+    label: '科研大脑',
     path: '/modules/research-brain',
     icon: BookOpen,
   },
   {
     id: 'socratic-interceptor',
-    label: 'Socratic Interceptor',
+    label: '逻辑思辨',
     path: '/modules/socratic-interceptor',
     icon: ShieldQuestion,
   },

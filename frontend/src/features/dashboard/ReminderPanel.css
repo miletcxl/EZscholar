@@ -1,0 +1,343 @@
+/* ── ReminderPanel Styles ─────────────────────────────────────────────────── */
+
+.reminder-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+/* Permission banner */
+.reminder-permission-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: rgba(250, 173, 20, 0.08);
+  border: 1px solid rgba(250, 173, 20, 0.25);
+  border-radius: 8px;
+  font-size: 12px;
+  color: #faad14;
+}
+
+.reminder-empty {
+  text-align: center;
+  color: #64748b;
+  font-size: 13px;
+  margin-top: 16px;
+  padding: 24px 0;
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+}
+
+/* ── Presets ── */
+.reminder-presets {
+  margin-bottom: 20px;
+}
+
+.reminder-preset-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.reminder-preset-btn {
+  background: rgba(99, 102, 241, 0.1);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  color: #e2e8f0;
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.reminder-preset-btn:hover {
+  background: rgba(99, 102, 241, 0.2);
+  border-color: rgba(99, 102, 241, 0.5);
+  transform: translateY(-1px);
+}
+
+.reminder-field-checkbox label {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  color: #e2e8f0;
+}
+
+.reminder-field-checkbox input[type="checkbox"] {
+  width: auto;
+  margin: 0;
+  cursor: pointer;
+}
+
+.reminder-perm-btn {
+  margin-left: auto;
+  padding: 4px 10px;
+  font-size: 11px;
+  background: rgba(250, 173, 20, 0.15);
+  border: 1px solid rgba(250, 173, 20, 0.4);
+  border-radius: 5px;
+  color: #faad14;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.reminder-perm-btn:hover {
+  background: rgba(250, 173, 20, 0.28);
+}
+
+/* Form */
+.reminder-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.reminder-form-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #d4d4d4;
+}
+
+.reminder-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.reminder-field label {
+  font-size: 11px;
+  color: #777;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+}
+
+.reminder-field input,
+.reminder-field textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px 10px;
+  background: var(--surface-elevated);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s;
+  resize: vertical;
+}
+
+.reminder-field input:focus,
+.reminder-field textarea:focus {
+  border-color: #5865f2;
+}
+
+.reminder-error {
+  margin: 0;
+  font-size: 12px;
+  color: #f87171;
+}
+
+.reminder-actions-row {
+  display: flex;
+  gap: 8px;
+}
+
+.reminder-submit {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px 16px;
+  background: #5865f2;
+  border: none;
+  border-radius: 7px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.reminder-submit:hover {
+  background: #4752c4;
+}
+
+.reminder-submit:active {
+  transform: scale(0.97);
+}
+
+.reminder-test-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 9px 14px;
+  background: rgba(250, 173, 20, 0.1);
+  border: 1px solid rgba(250, 173, 20, 0.35);
+  border-radius: 7px;
+  color: #faad14;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+
+.reminder-test-btn:hover {
+  background: rgba(250, 173, 20, 0.2);
+}
+
+
+/* Section heading */
+.reminder-section-title {
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #888;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* List */
+.reminder-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.reminder-item {
+  position: relative;
+  padding: 10px 12px;
+  background: var(--surface-elevated);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.reminder-item--pending {
+  border-color: #5865f2;
+}
+
+.reminder-item-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.reminder-item-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.reminder-item-countdown {
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  color: #a0aec0;
+  background: rgba(88, 101, 242, 0.15);
+  border-radius: 4px;
+  padding: 2px 7px;
+}
+
+.reminder-item-msg {
+  margin: 0;
+  font-size: 12px;
+  color: #777;
+  line-height: 1.5;
+}
+
+.reminder-item-cancel {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 4px 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  color: #a0aec0;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.reminder-item-cancel:hover {
+  background: rgba(248, 113, 113, 0.14);
+  border-color: rgba(248, 113, 113, 0.3);
+  color: #f87171;
+}
+
+/* Status badge */
+.reminder-status {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 4px;
+  letter-spacing: 0.03em;
+}
+
+.reminder-status--pending {
+  background: rgba(88, 101, 242, 0.15);
+  color: #818cf8;
+}
+
+.reminder-status--fired {
+  background: rgba(250, 173, 20, 0.15);
+  color: #faad14;
+}
+
+.reminder-status--dismissed {
+  background: rgba(64, 197, 132, 0.12);
+  color: #40c584;
+}
+
+.reminder-status--cancelled {
+  background: rgba(150, 150, 150, 0.1);
+  color: #666;
+}
+
+.reminder-item-dismiss {
+  margin-top: 6px;
+  padding: 4px 10px;
+  font-size: 11px;
+  background: rgba(64, 197, 132, 0.1);
+  border: 1px solid rgba(64, 197, 132, 0.25);
+  border-radius: 5px;
+  color: #40c584;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.reminder-item-dismiss:hover {
+  background: rgba(64, 197, 132, 0.2);
+}
+
+.reminder-empty {
+  margin: 0;
+  font-size: 13px;
+  color: #555;
+  text-align: center;
+  padding: 10px 0;
+}

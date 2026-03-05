@@ -42,6 +42,6 @@ export function Sidebar() {
           <SidebarNavLink key={item.id} label={item.label} path={item.path} icon={item.icon} />
         ))}
       </nav>
-    </aside>
+    </aside >
   );
 }

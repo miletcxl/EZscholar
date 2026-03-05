@@ -1,25 +1,31 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import clsx from 'clsx';
 import { useUiStore } from '../stores/useUiStore';
 
 export function ToastCenter() {
   const toasts = useUiStore((state) => state.toasts);
   const dismissToast = useUiStore((state) => state.dismissToast);
+  // Track which toast IDs already have timers so we don't reset them
+  const timerMap = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
 
   useEffect(() => {
-    if (toasts.length === 0) {
-      return;
-    }
+    toasts.forEach((toast) => {
+      if (!timerMap.current.has(toast.id)) {
+        const handle = window.setTimeout(() => {
+          dismissToast(toast.id);
+          timerMap.current.delete(toast.id);
+        }, 8000);
+        timerMap.current.set(toast.id, handle);
+      }
+    });
 
-    const timers = toasts.map((toast) =>
-      window.setTimeout(() => {
-        dismissToast(toast.id);
-      }, 2800),
-    );
-
-    return () => {
-      timers.forEach((timer) => window.clearTimeout(timer));
-    };
+    // Clean up timers for toasts that were manually dismissed
+    timerMap.current.forEach((handle, id) => {
+      if (!toasts.find((t) => t.id === id)) {
+        clearTimeout(handle);
+        timerMap.current.delete(id);
+      }
+    });
   }, [dismissToast, toasts]);
 
   return (
@@ -40,3 +46,4 @@ export function ToastCenter() {
     </div>
   );
 }
+
