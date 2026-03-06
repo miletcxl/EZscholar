@@ -1,5 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { MemoryRouter } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { OutputGeneratorPanel } from './OutputGeneratorPanel';
 import { useWorkspaceStore } from '../../stores/useWorkspaceStore';
@@ -72,7 +73,11 @@ describe('OutputGeneratorPanel', () => {
       throw new Error(`Unexpected request: ${url}`);
     });
 
-    render(<OutputGeneratorPanel />);
+    render(
+      <MemoryRouter>
+        <OutputGeneratorPanel />
+      </MemoryRouter>,
+    );
 
     const fileInput = screen.getByLabelText('草稿文件 (.docx)');
     const file = new File(['fake-content'], 'draft.docx', {
@@ -117,7 +122,11 @@ describe('OutputGeneratorPanel', () => {
       ),
     );
 
-    render(<OutputGeneratorPanel />);
+    render(
+      <MemoryRouter>
+        <OutputGeneratorPanel />
+      </MemoryRouter>,
+    );
 
     const draftPathInput = screen.getByLabelText('草稿路径（支持手动路径模式）');
     const assetDirInput = screen.getByLabelText('图片输出目录');

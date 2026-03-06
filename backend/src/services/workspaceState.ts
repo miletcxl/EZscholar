@@ -119,6 +119,17 @@ function createDefaultWorkspaceConfig(workspacePath: string): WorkspaceConfig {
       'deadline-engine': {
         defaultDelayMinutes: 30,
       },
+      'output-generator': {
+        slides: {
+          defaultProviderId: 'generic-webhook-default',
+          providers: [],
+          marp: {
+            command: 'marp',
+            baseArgs: ['--allow-local-files'],
+            timeoutMs: 120_000,
+          },
+        },
+      },
     },
   };
 }
@@ -133,6 +144,7 @@ function createDefaultModuleSnapshots(): ModuleSnapshots {
       },
       'output-generator': {
         lastReports: [],
+        lastSlides: [],
       },
     },
   };
@@ -329,6 +341,7 @@ function applyEventToSnapshots(snapshots: ModuleSnapshots, event: WorkspaceEvent
       },
       'output-generator': {
         lastReports: [...snapshots.modules['output-generator'].lastReports],
+        lastSlides: [...snapshots.modules['output-generator'].lastSlides],
       },
     },
   };
@@ -391,6 +404,19 @@ function applyEventToSnapshots(snapshots: ModuleSnapshots, event: WorkspaceEvent
       next.modules['output-generator'].lastReports = [
         outputPath,
         ...next.modules['output-generator'].lastReports.filter((item) => item !== outputPath),
+      ].slice(0, 20);
+    }
+  }
+
+  if (
+    (event.moduleId === 'output-generator' || event.moduleId === 'slides-studio') &&
+    event.type === 'slides.generated'
+  ) {
+    const outputPath = typeof event.payload?.outputPath === 'string' ? event.payload.outputPath : null;
+    if (outputPath) {
+      next.modules['output-generator'].lastSlides = [
+        outputPath,
+        ...next.modules['output-generator'].lastSlides.filter((item) => item !== outputPath),
       ].slice(0, 20);
     }
   }

@@ -1,4 +1,5 @@
 import type {
+  CreateSlideJobRequest,
   DocsMakerApiError,
   GenerateSlidesRequest,
   GenerateSlidesResponse,
@@ -6,8 +7,11 @@ import type {
   ParseWordDraftResponse,
   RenderAcademicReportRequest,
   RenderAcademicReportResponse,
+  SlideJob,
   UploadDraftRequest,
   UploadDraftResponse,
+  UploadMarkdownRequest,
+  UploadMarkdownResponse,
 } from './types';
 
 class DocsMakerClientError extends Error {
@@ -69,6 +73,20 @@ export async function uploadDraft(req: UploadDraftRequest): Promise<UploadDraftR
   });
 }
 
+export async function uploadMarkdown(req: UploadMarkdownRequest): Promise<UploadMarkdownResponse> {
+  const formData = new FormData();
+  formData.append('file', req.file);
+  formData.append('workspacePath', req.workspacePath);
+  if (req.subDir) {
+    formData.append('subDir', req.subDir);
+  }
+
+  return requestJson<UploadMarkdownResponse>(`${BASE_URL}/upload-markdown`, {
+    method: 'POST',
+    body: formData,
+  });
+}
+
 export async function parseWordDraft(req: ParseWordDraftRequest): Promise<ParseWordDraftResponse> {
   return requestJson<ParseWordDraftResponse>(`${BASE_URL}/parse-word-draft`, {
     method: 'POST',
@@ -100,6 +118,46 @@ export async function generatePresentationSlides(
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(req),
+  });
+}
+
+export async function createSlideJob(req: CreateSlideJobRequest): Promise<SlideJob> {
+  return requestJson<SlideJob>(`${BASE_URL}/slides/jobs`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(req),
+  });
+}
+
+export async function getSlideJob(workspacePath: string, jobId: string): Promise<SlideJob> {
+  const qs = new URLSearchParams({
+    workspacePath,
+  });
+
+  return requestJson<SlideJob>(`${BASE_URL}/slides/jobs/${encodeURIComponent(jobId)}?${qs.toString()}`, {
+    method: 'GET',
+  });
+}
+
+export async function listSlideJobs(params: {
+  workspacePath: string;
+  limit?: number;
+  status?: 'queued' | 'running' | 'succeeded' | 'failed';
+}): Promise<SlideJob[]> {
+  const qs = new URLSearchParams({
+    workspacePath: params.workspacePath,
+  });
+  if (typeof params.limit === 'number') {
+    qs.set('limit', String(params.limit));
+  }
+  if (params.status) {
+    qs.set('status', params.status);
+  }
+
+  return requestJson<SlideJob[]>(`${BASE_URL}/slides/jobs?${qs.toString()}`, {
+    method: 'GET',
   });
 }
 

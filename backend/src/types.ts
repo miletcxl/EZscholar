@@ -5,6 +5,11 @@ export const UploadDraftSchema = z.object({
   subDir: z.string().optional(),
 });
 
+export const UploadMarkdownSchema = z.object({
+  workspacePath: z.string().min(1, 'workspacePath required'),
+  subDir: z.string().optional(),
+});
+
 export const ParseWordDraftSchema = z.object({
   inputFilePath: z.string().min(1, 'inputFilePath required'),
   outputAssetDir: z.string().min(1, 'outputAssetDir required'),
@@ -22,6 +27,93 @@ export const GeneratePresentationSlidesSchema = z.object({
   slideOutlineMarkdown: z.string().min(1, 'slideOutlineMarkdown required'),
   outputPath: z.string().min(1, 'outputPath required'),
   workspacePath: z.string().min(1, 'workspacePath required'),
+});
+
+export const SlideJobStatusSchema = z.enum(['queued', 'running', 'succeeded', 'failed']);
+export const SlideJobSourceTypeSchema = z.enum(['markdown_content', 'markdown_file', 'external_prompt']);
+
+export const SlidesProviderConfigSchema = z.object({
+  id: z.string().min(1),
+  label: z.string().min(1),
+  kind: z.literal('generic-webhook').default('generic-webhook'),
+  webhookUrl: z.string().min(1),
+  authToken: z.string().optional(),
+  timeoutMs: z.number().int().positive().optional(),
+  headers: z.record(z.string()).optional(),
+});
+
+export const SlidesMarpConfigSchema = z.object({
+  command: z.string().min(1).default('marp'),
+  baseArgs: z.array(z.string()).default(['--allow-local-files']),
+  timeoutMs: z.number().int().positive().default(120_000),
+});
+
+export const SlidesModuleConfigSchema = z.object({
+  defaultProviderId: z.string().min(1).default('generic-webhook-default'),
+  providers: z.array(SlidesProviderConfigSchema).default([]),
+  marp: SlidesMarpConfigSchema.default({
+    command: 'marp',
+    baseArgs: ['--allow-local-files'],
+    timeoutMs: 120_000,
+  }),
+});
+
+export const CreateSlideJobSchema = z
+  .object({
+    workspacePath: z.string().min(1, 'workspacePath required'),
+    markdownContent: z.string().optional(),
+    markdownFilePath: z.string().optional(),
+    externalPrompt: z.string().optional(),
+    providerId: z.string().optional(),
+    outputPath: z.string().optional(),
+    title: z.string().optional(),
+  })
+  .superRefine((payload, ctx) => {
+    const sourceCount = Number(Boolean(payload.markdownContent?.trim())) +
+      Number(Boolean(payload.markdownFilePath?.trim())) +
+      Number(Boolean(payload.externalPrompt?.trim()));
+
+    if (sourceCount !== 1) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'markdownContent / markdownFilePath / externalPrompt 必须且只能提供一个',
+      });
+    }
+  });
+
+export const GetSlideJobQuerySchema = z.object({
+  workspacePath: z.string().min(1, 'workspacePath required'),
+});
+
+export const ListSlideJobsQuerySchema = z.object({
+  workspacePath: z.string().min(1, 'workspacePath required'),
+  limit: z.coerce.number().int().positive().max(200).optional(),
+  status: SlideJobStatusSchema.optional(),
+});
+
+export const SlideJobSchema = z.object({
+  jobId: z.string().min(1),
+  workspacePath: z.string().min(1),
+  status: SlideJobStatusSchema,
+  createdAt: z.string().min(1),
+  updatedAt: z.string().min(1),
+  sourceType: SlideJobSourceTypeSchema,
+  providerId: z.string().optional(),
+  markdownFilePath: z.string().optional(),
+  outputPath: z.string().min(1),
+  relativeOutputPath: z.string().optional(),
+  downloadUrl: z.string().optional(),
+  externalPrompt: z.string().optional(),
+  title: z.string().optional(),
+  errorCode: z.string().optional(),
+  errorMessage: z.string().optional(),
+  hint: z.string().optional(),
+});
+
+export const SlideJobsStoreSchema = z.object({
+  version: z.number().int().positive(),
+  updatedAt: z.string().min(1),
+  jobs: z.array(SlideJobSchema),
 });
 
 export const DownloadQuerySchema = z.object({
@@ -46,6 +138,10 @@ const DeadlineEngineModuleConfigSchema = z.object({
   defaultDelayMinutes: z.number().positive().optional(),
 });
 
+const OutputGeneratorModuleConfigSchema = z.object({
+  slides: SlidesModuleConfigSchema.optional(),
+});
+
 export const WorkspaceConfigSchema = z.object({
   version: z.number().int().positive(),
   updatedAt: z.string(),
@@ -60,6 +156,7 @@ export const WorkspaceConfigSchema = z.object({
   modules: z
     .object({
       'deadline-engine': DeadlineEngineModuleConfigSchema.optional(),
+      'output-generator': OutputGeneratorModuleConfigSchema.optional(),
     })
     .passthrough()
     .default({}),
@@ -78,6 +175,7 @@ export const ReminderSnapshotSchema = z.object({
 
 const OutputGeneratorSnapshotSchema = z.object({
   lastReports: z.array(z.string()).default([]),
+  lastSlides: z.array(z.string()).default([]),
 });
 
 export const ModuleSnapshotsSchema = z.object({
@@ -146,9 +244,19 @@ export const WorkspaceMigrateFromLocalStorageSchema = z.object({
 });
 
 export type UploadDraftRequest = z.infer<typeof UploadDraftSchema>;
+export type UploadMarkdownRequest = z.infer<typeof UploadMarkdownSchema>;
 export type ParseWordDraftRequest = z.infer<typeof ParseWordDraftSchema>;
 export type RenderAcademicReportRequest = z.infer<typeof RenderAcademicReportSchema>;
 export type GeneratePresentationSlidesRequest = z.infer<typeof GeneratePresentationSlidesSchema>;
+export type SlideJobStatus = z.infer<typeof SlideJobStatusSchema>;
+export type SlideJobSourceType = z.infer<typeof SlideJobSourceTypeSchema>;
+export type SlidesProviderConfig = z.infer<typeof SlidesProviderConfigSchema>;
+export type SlidesModuleConfig = z.infer<typeof SlidesModuleConfigSchema>;
+export type SlideJob = z.infer<typeof SlideJobSchema>;
+export type SlideJobsStore = z.infer<typeof SlideJobsStoreSchema>;
+export type CreateSlideJobRequest = z.infer<typeof CreateSlideJobSchema>;
+export type GetSlideJobQuery = z.infer<typeof GetSlideJobQuerySchema>;
+export type ListSlideJobsQuery = z.infer<typeof ListSlideJobsQuerySchema>;
 export type WorkspaceConfig = z.infer<typeof WorkspaceConfigSchema>;
 export type ReminderSnapshot = z.infer<typeof ReminderSnapshotSchema>;
 export type ModuleSnapshots = z.infer<typeof ModuleSnapshotsSchema>;
@@ -161,6 +269,13 @@ export type WorkspaceMigrateFromLocalStorageRequest = z.infer<
 >;
 
 export interface UploadDraftResponse {
+  savedFilePath: string;
+  relativePath: string;
+  size: number;
+  uploadedAt: string;
+}
+
+export interface UploadMarkdownResponse {
   savedFilePath: string;
   relativePath: string;
   size: number;
@@ -183,6 +298,10 @@ export interface RenderAcademicReportResponse {
 }
 
 export interface GenerateSlidesResponse {
+  jobId: string;
+  status: SlideJobStatus;
+  outputPath: string;
+  pollUrl: string;
   message: string;
 }
 
@@ -198,6 +317,11 @@ export type DocsMakerErrorCode =
   | 'WORKSPACE_NOT_WRITABLE'
   | 'INVALID_SUBDIR'
   | 'FILE_NOT_FOUND'
+  | 'MARP_NOT_FOUND'
+  | 'WEBHOOK_REQUEST_FAILED'
+  | 'WEBHOOK_TIMEOUT'
+  | 'SLIDE_JOB_NOT_FOUND'
+  | 'SLIDES_RENDER_FAILED'
   | string;
 
 export class DocsMakerError extends Error {

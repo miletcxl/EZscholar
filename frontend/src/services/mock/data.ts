@@ -36,6 +36,13 @@ export const mockModuleSummaries: ModuleSummaryDTO[] = [
     kpi: { label: '报告生成成功率', value: '98.4%' },
   },
   {
+    id: 'slides-studio',
+    title: '幻灯片工坊',
+    status: 'healthy',
+    lastUpdatedAt: '2026-03-05T08:19:00Z',
+    kpi: { label: 'PPTX 任务成功率', value: '97.8%' },
+  },
+  {
     id: 'research-brain',
     title: '科研大脑',
     status: 'busy',
@@ -117,6 +124,22 @@ export const mockModuleDetails: ModuleDetailDTO[] = [
     ],
   },
   {
+    id: 'slides-studio',
+    description:
+      '独立处理 Markdown 到 PPTX 的异步任务，支持上传、路径与外部 webhook 生成链路。',
+    capabilities: ['Markdown 上传', '外部 webhook 取稿', 'Marp CLI 渲染', '任务轮询与下载'],
+    recentRuns: [
+      { id: 'run-ss-1', name: '网络安全课程答辩', state: '已完成', startedAt: '2026-03-05T08:19:00Z' },
+      { id: 'run-ss-2', name: '组会周报幻灯片', state: '渲染中', startedAt: '2026-03-05T06:30:00Z' },
+      { id: 'run-ss-3', name: '论文中期汇报', state: '已完成', startedAt: '2026-03-04T20:02:00Z' },
+    ],
+    metrics: [
+      { label: '平均渲染耗时', value: '1m 58s', trend: 'down' },
+      { label: '任务成功率', value: '97.8%', trend: 'up' },
+      { label: '最近 24h 任务数', value: '12', trend: 'up' },
+    ],
+  },
+  {
     id: 'research-brain',
     description:
       '面向复杂论文版面进行多模态解析与跨文献指标追踪，提升检索准确性与可溯源能力。',
@@ -182,6 +205,13 @@ export const mockRecentVisits: RecentVisitDTO[] = [
 ];
 
 export const mockActivityEvents: ActivityEventDTO[] = [
+  {
+    id: 'evt-0',
+    at: '2026-03-05T08:19:00Z',
+    level: 'success',
+    source: 'slides-studio',
+    message: '幻灯片任务已完成并归档到 /docs-maker/slides/output/slides-1772765254203.pptx',
+  },
   {
     id: 'evt-1',
     at: '2026-03-05T08:18:00Z',

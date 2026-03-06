@@ -3,6 +3,7 @@ export type ModuleId =
   | 'remote-dispatcher'
   | 'flow-guardian'
   | 'output-generator'
+  | 'slides-studio'
   | 'research-brain'
   | 'socratic-interceptor';
 

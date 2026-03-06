@@ -18,6 +18,25 @@ export interface WorkspaceConfig {
     'deadline-engine'?: {
       defaultDelayMinutes?: number;
     };
+    'output-generator'?: {
+      slides?: {
+        defaultProviderId: string;
+        providers: Array<{
+          id: string;
+          label: string;
+          kind: 'generic-webhook';
+          webhookUrl: string;
+          authToken?: string;
+          timeoutMs?: number;
+          headers?: Record<string, string>;
+        }>;
+        marp: {
+          command: string;
+          baseArgs: string[];
+          timeoutMs: number;
+        };
+      };
+    };
     [key: string]: unknown;
   };
 }
@@ -31,6 +50,7 @@ export interface ModuleSnapshots {
     };
     'output-generator': {
       lastReports: string[];
+      lastSlides: string[];
     };
     [key: string]: unknown;
   };

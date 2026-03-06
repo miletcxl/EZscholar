@@ -217,16 +217,18 @@ export function ReminderPanel() {
                                     <span className="reminder-item-name">
                                         {r.repeatIntervalMinutes ? '🔄 ' : ''}{r.taskName}
                                     </span>
-                                    <span className="reminder-item-countdown">{formatCountdown(r.fireAt)}</span>
+                                    <div className="reminder-item-actions">
+                                        <span className="reminder-item-countdown">{formatCountdown(r.fireAt)}</span>
+                                        <button
+                                            className="reminder-item-cancel"
+                                            title="取消提醒"
+                                            onClick={() => cancelReminderById(r.id)}
+                                        >
+                                            <X size={12} /> 取消
+                                        </button>
+                                    </div>
                                 </div>
                                 <p className="reminder-item-msg">{r.message}</p>
-                                <button
-                                    className="reminder-item-cancel"
-                                    title="取消提醒"
-                                    onClick={() => cancelReminderById(r.id)}
-                                >
-                                    <X size={12} /> 取消
-                                </button>
                             </li>
                         ))}
                     </ul>

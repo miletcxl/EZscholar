@@ -143,30 +143,46 @@ export const AGENT_TOOLS: ChatCompletionTool[] = [
         },
     },
 
-    // ── Docs Maker: slides stub ──────────────────────────────────────────────
+    // ── Slides Maker: async PPTX jobs ────────────────────────────────────────
     {
         type: 'function',
         function: {
             name: 'generate_presentation_slides',
             description:
-                '根据大纲生成幻灯片（当前为占位实现，返回固定成功信息，不会真正生成 PPTX）。',
+                '创建异步 PPTX 生成任务。支持三种 markdown 来源：markdown_content / markdown_file_path / external_prompt（必须且只能提供一个）。',
             parameters: {
                 type: 'object',
                 properties: {
-                    slide_outline_markdown: {
+                    markdown_content: {
                         type: 'string',
-                        description: '幻灯片大纲 markdown 文本。',
+                        description: '直接提供 markdown 内容。',
+                    },
+                    markdown_file_path: {
+                        type: 'string',
+                        description: '已有 markdown 文件路径（必须位于 workspace 内）。',
+                    },
+                    external_prompt: {
+                        type: 'string',
+                        description: '外部工具生成 markdown 的提示词（走通用 webhook provider）。',
+                    },
+                    provider_id: {
+                        type: 'string',
+                        description: '外部 provider id（可选，不传则使用 workspace 默认 provider）。',
                     },
                     output_path: {
                         type: 'string',
-                        description: '目标 PPTX 路径（占位参数）。',
+                        description: '目标 PPTX 输出路径（可选，不传则自动落盘到 docs-maker/slides/output）。',
+                    },
+                    title: {
+                        type: 'string',
+                        description: '任务标题（可选）。',
                     },
                     workspace_path: {
                         type: 'string',
                         description: '工作区根路径。若未提供将使用当前应用设置中的 workspace。',
                     },
                 },
-                required: ['slide_outline_markdown', 'output_path'],
+                required: [],
             },
         },
     },

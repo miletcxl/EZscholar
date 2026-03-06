@@ -7,7 +7,7 @@ import { useNotifierStore } from '../../stores/useNotifierStore';
 import { useWorkspaceStore } from '../../stores/useWorkspaceStore';
 import type { CreateReminderPayload } from '../notifier/types';
 import {
-    generatePresentationSlides,
+    createSlideJob,
     parseWordDraft,
     renderAcademicReport,
 } from '../docs-maker/client';
@@ -125,8 +125,12 @@ interface RenderAcademicReportArgs {
 }
 
 interface GeneratePresentationSlidesArgs {
-    slide_outline_markdown: string;
-    output_path: string;
+    markdown_content?: string;
+    markdown_file_path?: string;
+    external_prompt?: string;
+    provider_id?: string;
+    output_path?: string;
+    title?: string;
     workspace_path?: string;
 }
 
@@ -377,17 +381,35 @@ async function execGeneratePresentationSlides(
         };
     }
 
-    const result = await generatePresentationSlides({
-        slideOutlineMarkdown: args.slide_outline_markdown,
-        outputPath: args.output_path,
+    const hasExplicitMarkdownSource = Boolean(
+        args.markdown_content?.trim()
+        || args.markdown_file_path?.trim()
+        || args.external_prompt?.trim(),
+    );
+    const markdownContentFallback = args.markdown_content?.trim()
+        || (!hasExplicitMarkdownSource ? docsMakerMarkdownCache.lastMarkdown : undefined);
+
+    const result = await createSlideJob({
+        markdownContent: markdownContentFallback || undefined,
+        markdownFilePath: args.markdown_file_path?.trim() || undefined,
+        externalPrompt: args.external_prompt?.trim() || undefined,
+        providerId: args.provider_id?.trim() || undefined,
+        outputPath: args.output_path?.trim() || undefined,
+        title: args.title?.trim() || undefined,
         workspacePath,
     });
 
     return {
         toolCallId,
         toolName: 'generate_presentation_slides',
-        summary: result.message,
-        content: JSON.stringify({ status: 'ok', ...result }),
+        summary: `幻灯片任务已创建（job: ${result.jobId}），正在异步生成`,
+        content: JSON.stringify({
+            job_id: result.jobId,
+            job_status: result.status,
+            output_path: result.outputPath,
+            poll_hint: `GET /api/docs-maker/slides/jobs/${result.jobId}?workspacePath=<workspacePath>`,
+            ...result,
+        }),
         ok: true,
     };
 }

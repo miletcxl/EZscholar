@@ -8,6 +8,7 @@ import {
   HeartPulse,
   LayoutDashboard,
   MessageSquare,
+  MonitorPlay,
   ShieldQuestion,
   TerminalSquare,
 } from 'lucide-react';
@@ -59,6 +60,12 @@ export const moduleNavItems: ModuleNavItem[] = [
     label: '文档生成',
     path: '/modules/output-generator',
     icon: Database,
+  },
+  {
+    id: 'slides-studio',
+    label: '幻灯片工坊',
+    path: '/modules/slides-studio',
+    icon: MonitorPlay,
   },
   {
     id: 'research-brain',

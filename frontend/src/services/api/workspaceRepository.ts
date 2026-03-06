@@ -17,6 +17,7 @@ const KNOWN_MODULE_IDS = new Set<ModuleId>([
   'remote-dispatcher',
   'flow-guardian',
   'output-generator',
+  'slides-studio',
   'research-brain',
   'socratic-interceptor',
 ]);

@@ -1,10 +1,11 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { Navigate, createBrowserRouter } from 'react-router-dom';
 import { AppShell } from '../layouts/AppShell';
 import { ActivityPage } from '../pages/ActivityPage';
 import { ChatPage } from '../pages/ChatPage';
 import { ModuleDetailPage } from '../pages/ModuleDetailPage';
 import { OverviewPage } from '../pages/OverviewPage';
 import { SettingsPage } from '../pages/SettingsPage';
+import { SlidesStudioPage } from '../pages/SlidesStudioPage';
 
 export const router = createBrowserRouter([
   {
@@ -19,6 +20,8 @@ export const router = createBrowserRouter([
       { path: 'modules/remote-dispatcher', element: <ModuleDetailPage moduleId="remote-dispatcher" /> },
       { path: 'modules/flow-guardian', element: <ModuleDetailPage moduleId="flow-guardian" /> },
       { path: 'modules/output-generator', element: <ModuleDetailPage moduleId="output-generator" /> },
+      { path: 'modules/slides-studio', element: <SlidesStudioPage /> },
+      { path: 'modules/output-generator/slides', element: <Navigate to="/modules/slides-studio" replace /> },
       { path: 'modules/research-brain', element: <ModuleDetailPage moduleId="research-brain" /> },
       {
         path: 'modules/socratic-interceptor',

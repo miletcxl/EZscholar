@@ -100,6 +100,27 @@ describe('workspace-state routes', () => {
     expect(listResp.body[0].type).toBe('reminder.created');
   });
 
+  it('appends slides.generated event and updates output-generator snapshot', async () => {
+    const app = createApp();
+    const workspace = await fs.mkdtemp(path.join(os.tmpdir(), 'ezscholar-workspace-state-'));
+
+    const eventResp = await request(app).post('/api/workspace-state/events').send({
+      workspacePath: workspace,
+      event: {
+        moduleId: 'output-generator',
+        type: 'slides.generated',
+        level: 'success',
+        message: '幻灯片生成完成',
+        payload: {
+          outputPath: path.join(workspace, 'docs-maker', 'slides', 'output', 'demo.pptx'),
+        },
+      },
+    });
+
+    expect(eventResp.status).toBe(200);
+    expect(eventResp.body.moduleSnapshots.modules['output-generator'].lastSlides).toHaveLength(1);
+  });
+
   it('rejects config write when config.workspacePath is outside request workspacePath', async () => {
     const app = createApp();
     const workspace = await fs.mkdtemp(path.join(os.tmpdir(), 'ezscholar-workspace-state-'));

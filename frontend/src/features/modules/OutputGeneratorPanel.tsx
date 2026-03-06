@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
-import { FileDown, FileText, Loader2, Upload } from 'lucide-react';
+import { FileDown, FileText, Loader2, MonitorPlay, Upload } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import {
   parseWordDraft,
   renderAcademicReport,
@@ -203,6 +204,12 @@ export function OutputGeneratorPanel() {
       <p className="output-generator-intro">
         上传 Word 草稿后提取图片并转 Markdown，可编辑后渲染为 PDF/Docx，并支持下载与 workspace 落盘。
       </p>
+      <div className="output-subnav">
+        <Link className="output-nav-link" to="/modules/slides-studio">
+          <MonitorPlay size={14} />
+          打开幻灯片工坊模块
+        </Link>
+      </div>
 
       <div className="output-grid">
         <div className="output-field">

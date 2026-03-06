@@ -52,17 +52,21 @@ Implemented capabilities:
   - `/activity`: Global activity feed
   - `/settings`: Theme, provider, and workspace settings
   - `/modules/*`: Module detail pages (Deadline / Remote / Flow / Output / Research / Socratic)
+  - `/modules/slides-studio`: Standalone Slides Studio (Markdown -> PPTX)
 - Agentic AI chat:
   - OpenAI-compatible Chat Completions integration
   - Function-calling tools:
     - `schedule_reminder` / `list_reminders` / `cancel_reminder`
-    - `parse_word_draft` / `render_academic_report` / `generate_presentation_slides` (stub)
+    - `parse_word_draft` / `render_academic_report` / `generate_presentation_slides` (async job)
   - In-chat tool action cards, plus local notifications and toast delivery
 - Module 2 Docs Maker:
   - Upload `.docx` draft to workspace
   - Parse Word draft to Markdown with extracted image placeholders
   - Render polished Markdown to `pdf`/`docx` (`typst` first, `pandoc` fallback for PDF)
+  - Standalone Slides Studio with async PPTX jobs (`Marp CLI`)
+  - Markdown sources for PPTX: upload `.md`, existing markdown path, or external webhook prompt
   - Default output target: `workspace/docs-maker/output/report-<timestamp>.pdf`
+  - Default PPTX output target: `workspace/docs-maker/slides/output/slides-<timestamp>.pptx`
   - Download stream endpoint and workspace file persistence
 - Command palette: `Ctrl/Cmd + K` for navigation and simulated actions
 - Theme system: dark/light mode with improved light-mode readability
@@ -196,7 +200,7 @@ UniHelperCode/
 ├── docs/images/                 # README screenshot assets
 ├── backend/
 │   ├── src/routes/              # docs-maker routes
-│   ├── src/services/            # path guard / parser / renderer / slides stub
+│   ├── src/services/            # path guard / parser / renderer / slides jobs
 │   └── src/types.ts             # zod schemas + response types
 └── frontend/
     ├── src/
@@ -218,8 +222,9 @@ UniHelperCode/
 1. Start the app and open AI Chat (`/`) by default.
 2. Configure your active LLM provider in `/settings`.
 3. Try prompts like "Remind me in 30 minutes to ..." to validate tool calling.
-4. Open `/modules/output-generator` to upload a `.docx`, parse markdown, and render `pdf/docx` (recommended output dir: `docs-maker/output`).
-5. Use `Ctrl/Cmd + K` for fast navigation and action simulation.
+4. Open `/modules/output-generator` to process `.docx` and render `pdf/docx`.
+5. Open `/modules/slides-studio` to create async PPTX jobs from markdown/webhook input.
+6. Use `Ctrl/Cmd + K` for fast navigation and action simulation.
 
 ---
 
@@ -228,7 +233,7 @@ UniHelperCode/
 - Integrate real backend APIs (while keeping mock fallback)
 - Add module-level real-time status subscriptions (WebSocket/SSE)
 - Persist reminders and chat history
-- Add real PPTX generation (replace slides stub)
+- Expand external slide providers (Canva/NotebookLM adapters on top of generic webhook)
 - Expand bilingual UX across the product
 
 ---

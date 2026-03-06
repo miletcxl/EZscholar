@@ -241,12 +241,20 @@
   justify-content: space-between;
   gap: 8px;
   margin-bottom: 4px;
+  flex-wrap: wrap;
 }
 
 .reminder-item-name {
   font-size: 13px;
   font-weight: 600;
   color: var(--text);
+}
+
+.reminder-item-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
 }
 
 .reminder-item-countdown {
@@ -266,19 +274,17 @@
 }
 
 .reminder-item-cancel {
-  position: absolute;
-  top: 8px;
-  right: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 4px;
-  padding: 4px 8px;
+  padding: 3px 8px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 4px;
   color: #a0aec0;
   font-size: 11px;
+  line-height: 1;
   cursor: pointer;
   transition: all 0.2s ease;
 }

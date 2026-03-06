@@ -6,6 +6,7 @@ import { TopHeader } from './TopHeader';
 import { ToastCenter } from '../components/ToastCenter';
 import { useUiStore } from '../stores/useUiStore';
 import { useLlmStore } from '../stores/useLlmStore';
+import { useOutputGeneratorStore } from '../stores/useOutputGeneratorStore';
 import { useWorkspaceStore } from '../stores/useWorkspaceStore';
 import { useNotifierStore } from '../stores/useNotifierStore';
 import {
@@ -81,6 +82,8 @@ export function AppShell() {
   const activeProviderId = useLlmStore((state) => state.activeProviderId);
   const providers = useLlmStore((state) => state.providers);
   const hydrateLlm = useLlmStore((state) => state.hydrateFromWorkspace);
+  const slidesConfig = useOutputGeneratorStore((state) => state.slidesConfig);
+  const hydrateOutputGenerator = useOutputGeneratorStore((state) => state.hydrateFromWorkspace);
 
   const hydrateFromWorkspace = useNotifierStore((state) => state.hydrateFromWorkspace);
   const [workspaceStateReady, setWorkspaceStateReady] = useState(false);
@@ -121,6 +124,7 @@ export function AppShell() {
         setWorkspacePath(payload.config.workspacePath);
         hydrateLlm(payload.config.llm);
         setTheme(payload.config.ui.theme);
+        hydrateOutputGenerator(payload.config.modules['output-generator']?.slides);
         hydrateFromWorkspace(payload.moduleSnapshots.modules['deadline-engine']?.reminders ?? []);
       } catch (error) {
         console.warn('workspace-state bootstrap failed, fallback to local persisted state', error);
@@ -135,7 +139,7 @@ export function AppShell() {
     return () => {
       isDisposed = true;
     };
-  }, [hydrateFromWorkspace, hydrateLlm, setTheme, setWorkspacePath]);
+  }, [hydrateFromWorkspace, hydrateLlm, hydrateOutputGenerator, setTheme, setWorkspacePath]);
 
   useEffect(() => {
     if (!workspaceStateReady || !workspacePath.trim()) {
@@ -161,6 +165,9 @@ export function AppShell() {
         'deadline-engine': {
           defaultDelayMinutes: 30,
         },
+        'output-generator': {
+          slides: slidesConfig,
+        },
       },
     };
 
@@ -178,7 +185,7 @@ export function AppShell() {
         clearTimeout(persistTimerRef.current);
       }
     };
-  }, [activeProviderId, providers, theme, workspacePath, workspaceStateReady]);
+  }, [activeProviderId, providers, slidesConfig, theme, workspacePath, workspaceStateReady]);
 
   return (
     <div className="app-shell">
