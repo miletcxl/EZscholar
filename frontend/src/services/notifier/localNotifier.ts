@@ -9,6 +9,28 @@ type TimerHandle = ReturnType<typeof setTimeout>;
 
 const activeTimers = new Map<ReminderId, TimerHandle>();
 
+function notifyReminder(taskName: string, message: string, repeat: boolean) {
+    if (Notification.permission !== 'granted') {
+        return;
+    }
+
+    const prefix = repeat ? '🔄 ' : '📌 ';
+    new Notification(`${prefix}${taskName}`, {
+        body: message,
+        icon: '/vite.svg',
+    });
+}
+
+function bindTimer(reminder: ReminderDTO, delayMs: number, onFired: (id: ReminderId) => void) {
+    const safeDelay = Math.max(0, delayMs);
+    const handle = setTimeout(() => {
+        notifyReminder(reminder.taskName, reminder.message, Boolean(reminder.repeatIntervalMinutes));
+        activeTimers.delete(reminder.id);
+        onFired(reminder.id);
+    }, safeDelay);
+    activeTimers.set(reminder.id, handle);
+}
+
 /**
  * Request notification permission once.
  * Resolves to true if granted, false otherwise.
@@ -45,20 +67,7 @@ export function scheduleReminder(
         repeatIntervalMinutes: payload.repeatIntervalMinutes,
     };
 
-    const handle = setTimeout(() => {
-        // Try native browser notification first
-        if (Notification.permission === 'granted') {
-            const prefix = payload.repeatIntervalMinutes ? '🔄 ' : '📌 ';
-            new Notification(`${prefix}${payload.taskName}`, {
-                body: payload.message,
-                icon: '/vite.svg',
-            });
-        }
-        activeTimers.delete(id);
-        onFired(id);
-    }, delayMs);
-
-    activeTimers.set(id, handle);
+    bindTimer(reminder, delayMs, onFired);
     return reminder;
 }
 
@@ -75,18 +84,7 @@ export function restartTimer(
     cancelReminder(reminder.id);
 
     const delayMs = reminder.repeatIntervalMinutes * 60 * 1000;
-    const handle = setTimeout(() => {
-        if (Notification.permission === 'granted') {
-            new Notification(`🔄 ${reminder.taskName}`, {
-                body: reminder.message,
-                icon: '/vite.svg',
-            });
-        }
-        activeTimers.delete(reminder.id);
-        onFired(reminder.id);
-    }, delayMs);
-
-    activeTimers.set(reminder.id, handle);
+    bindTimer(reminder, delayMs, onFired);
 }
 
 /**
@@ -98,6 +96,22 @@ export function cancelReminder(id: ReminderId): void {
         clearTimeout(handle);
         activeTimers.delete(id);
     }
+}
+
+/**
+ * Ensure pending reminders recovered from workspace snapshots continue firing after refresh.
+ */
+export function syncReminderTimer(
+    reminder: ReminderDTO,
+    onFired: (id: ReminderId) => void
+): void {
+    cancelReminder(reminder.id);
+    if (reminder.status !== 'pending') {
+        return;
+    }
+
+    const delayMs = new Date(reminder.fireAt).getTime() - Date.now();
+    bindTimer(reminder, delayMs, onFired);
 }
 
 /**

@@ -10,6 +10,7 @@ import type {
   RenderAcademicReportResponse,
   UploadDraftResponse,
 } from '../../services/docs-maker/types';
+import { postWorkspaceEvent } from '../../services/workspace-state/client';
 import { useWorkspaceStore } from '../../stores/useWorkspaceStore';
 import './OutputGeneratorPanel.css';
 
@@ -170,6 +171,22 @@ export function OutputGeneratorPanel() {
         workspacePath,
       });
       setRenderResult(result);
+      void postWorkspaceEvent({
+        workspacePath,
+        event: {
+          moduleId: 'output-generator',
+          type: 'report.generated',
+          level: 'success',
+          message: `报告已生成：${result.outputPath}`,
+          payload: {
+            outputPath: result.outputPath,
+            format: result.format,
+            engineUsed: result.engineUsed,
+          },
+        },
+      }).catch(() => {
+        // UI success should not be blocked by history write failures.
+      });
     } catch (err) {
       applyError(err);
     } finally {

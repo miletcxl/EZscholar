@@ -57,6 +57,18 @@ describe('OutputGeneratorPanel', () => {
         );
       }
 
+      if (url.endsWith('/api/workspace-state/events')) {
+        return new Response(
+          JSON.stringify({
+            event: {
+              moduleId: 'output-generator',
+              type: 'report.generated',
+            },
+          }),
+          { status: 200, headers: { 'Content-Type': 'application/json' } },
+        );
+      }
+
       throw new Error(`Unexpected request: ${url}`);
     });
 

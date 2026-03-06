@@ -29,10 +29,136 @@ export const DownloadQuerySchema = z.object({
   workspacePath: z.string().min(1, 'workspacePath required'),
 });
 
+const ThemeSchema = z.enum(['dark', 'light']);
+
+const ReminderStatusSchema = z.enum(['pending', 'fired', 'dismissed', 'cancelled']);
+
+const LlmProviderSchema = z.object({
+  id: z.string().min(1),
+  label: z.string().min(1),
+  baseUrl: z.string().min(1),
+  apiKey: z.string(),
+  defaultModel: z.string().min(1),
+  timeoutMs: z.number().int().positive().optional(),
+});
+
+const DeadlineEngineModuleConfigSchema = z.object({
+  defaultDelayMinutes: z.number().positive().optional(),
+});
+
+export const WorkspaceConfigSchema = z.object({
+  version: z.number().int().positive(),
+  updatedAt: z.string(),
+  workspacePath: z.string().min(1),
+  llm: z.object({
+    activeProviderId: z.string().min(1),
+    providers: z.array(LlmProviderSchema),
+  }),
+  ui: z.object({
+    theme: ThemeSchema,
+  }),
+  modules: z
+    .object({
+      'deadline-engine': DeadlineEngineModuleConfigSchema.optional(),
+    })
+    .passthrough()
+    .default({}),
+});
+
+export const ReminderSnapshotSchema = z.object({
+  id: z.string().min(1),
+  taskName: z.string().min(1),
+  message: z.string().min(1),
+  delayMs: z.number().nonnegative(),
+  createdAt: z.string().min(1),
+  fireAt: z.string().min(1),
+  status: ReminderStatusSchema,
+  repeatIntervalMinutes: z.number().int().positive().optional(),
+});
+
+const OutputGeneratorSnapshotSchema = z.object({
+  lastReports: z.array(z.string()).default([]),
+});
+
+export const ModuleSnapshotsSchema = z.object({
+  version: z.number().int().positive(),
+  updatedAt: z.string(),
+  modules: z.object({
+    'deadline-engine': z.object({
+      reminders: z.array(ReminderSnapshotSchema).default([]),
+    }),
+    'output-generator': OutputGeneratorSnapshotSchema,
+  }),
+});
+
+const EventLevelSchema = z.enum(['info', 'success', 'warning', 'error']);
+
+export const WorkspaceEventSchema = z.object({
+  eventId: z.string().min(1).optional(),
+  at: z.string().optional(),
+  moduleId: z.string().min(1),
+  type: z.string().min(1),
+  level: EventLevelSchema.default('info'),
+  message: z.string().optional(),
+  payload: z.record(z.unknown()).default({}),
+});
+
+export const WorkspaceBootstrapQuerySchema = z.object({
+  workspacePath: z.string().min(1, 'workspacePath required'),
+});
+
+export const WorkspacePutConfigSchema = z.object({
+  workspacePath: z.string().min(1, 'workspacePath required'),
+  config: WorkspaceConfigSchema,
+});
+
+export const WorkspacePostEventSchema = z.object({
+  workspacePath: z.string().min(1, 'workspacePath required'),
+  event: WorkspaceEventSchema,
+});
+
+export const WorkspaceGetEventsQuerySchema = z.object({
+  workspacePath: z.string().min(1, 'workspacePath required'),
+  limit: z.coerce.number().int().positive().max(500).optional(),
+  moduleId: z.string().optional(),
+  from: z.string().optional(),
+  to: z.string().optional(),
+});
+
+export const WorkspaceMigrateFromLocalStorageSchema = z.object({
+  workspacePath: z.string().min(1, 'workspacePath required'),
+  localState: z
+    .object({
+      llm: z
+        .object({
+          activeProviderId: z.string().optional(),
+          providers: z.array(LlmProviderSchema).optional(),
+        })
+        .optional(),
+      ui: z
+        .object({
+          theme: ThemeSchema.optional(),
+        })
+        .optional(),
+      workspacePath: z.string().optional(),
+    })
+    .optional(),
+});
+
 export type UploadDraftRequest = z.infer<typeof UploadDraftSchema>;
 export type ParseWordDraftRequest = z.infer<typeof ParseWordDraftSchema>;
 export type RenderAcademicReportRequest = z.infer<typeof RenderAcademicReportSchema>;
 export type GeneratePresentationSlidesRequest = z.infer<typeof GeneratePresentationSlidesSchema>;
+export type WorkspaceConfig = z.infer<typeof WorkspaceConfigSchema>;
+export type ReminderSnapshot = z.infer<typeof ReminderSnapshotSchema>;
+export type ModuleSnapshots = z.infer<typeof ModuleSnapshotsSchema>;
+export type WorkspaceEvent = z.infer<typeof WorkspaceEventSchema>;
+export type WorkspacePutConfigRequest = z.infer<typeof WorkspacePutConfigSchema>;
+export type WorkspacePostEventRequest = z.infer<typeof WorkspacePostEventSchema>;
+export type WorkspaceGetEventsQuery = z.infer<typeof WorkspaceGetEventsQuerySchema>;
+export type WorkspaceMigrateFromLocalStorageRequest = z.infer<
+  typeof WorkspaceMigrateFromLocalStorageSchema
+>;
 
 export interface UploadDraftResponse {
   savedFilePath: string;
@@ -69,6 +195,7 @@ export type DocsMakerErrorCode =
   | 'FILE_REQUIRED'
   | 'UNSUPPORTED_FILE_TYPE'
   | 'WORKSPACE_PATH_VIOLATION'
+  | 'WORKSPACE_NOT_WRITABLE'
   | 'INVALID_SUBDIR'
   | 'FILE_NOT_FOUND'
   | string;

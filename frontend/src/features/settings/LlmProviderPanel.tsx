@@ -23,7 +23,8 @@ export function LlmProviderPanel() {
             <p className="provider-panel-title">🤖 AI 推理引擎</p>
             <p className="provider-panel-desc">
                 选择一个 Provider 作为 Cyber-Scholar Agent 的语言模型后端。
-                更多 Provider 可在此扩展。
+                更多 Provider 可在此扩展。当前版本会把 API Key 明文写入 workspace/.ezscholar/config.json，
+                请勿提交该目录到公开仓库。
             </p>
 
             <ul className="provider-list">

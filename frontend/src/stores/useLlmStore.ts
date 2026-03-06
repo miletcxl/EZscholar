@@ -22,6 +22,10 @@ interface LlmState {
     removeProvider: (id: string) => void;
     updateProviderConfig: (id: string, updates: Partial<LLMProviderConfig>) => void;
     runTest: (id: string) => Promise<void>;
+    hydrateFromWorkspace: (payload: {
+        activeProviderId: string;
+        providers: LLMProviderConfig[];
+    }) => void;
 }
 
 function mergeProvidersWithBuiltIns(providers: LLMProviderConfig[]): LLMProviderConfig[] {
@@ -91,6 +95,17 @@ export const useLlmStore = create<LlmState>()(
                         [id]: { ...result, testedAt: new Date().toISOString() },
                     },
                 }));
+            },
+
+            hydrateFromWorkspace: (payload) => {
+                const mergedProviders = mergeProvidersWithBuiltIns(payload.providers);
+                const activeProviderId = mergedProviders.some((provider) => provider.id === payload.activeProviderId)
+                    ? payload.activeProviderId
+                    : DEFAULT_PROVIDER_ID;
+                set({
+                    providers: mergedProviders,
+                    activeProviderId,
+                });
             },
         }),
         {

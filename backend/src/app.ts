@@ -2,6 +2,7 @@ import cors from 'cors';
 import express from 'express';
 import { ZodError } from 'zod';
 import { createDocsMakerRouter } from './routes/docsMaker.js';
+import { createWorkspaceStateRouter } from './routes/workspaceState.js';
 import { DocsMakerError } from './types.js';
 
 export function createApp() {
@@ -15,6 +16,7 @@ export function createApp() {
   });
 
   app.use('/api/docs-maker', createDocsMakerRouter());
+  app.use('/api/workspace-state', createWorkspaceStateRouter());
 
   app.use((error: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
     if (error instanceof ZodError) {

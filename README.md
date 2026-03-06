@@ -66,7 +66,12 @@ Implemented capabilities:
   - Download stream endpoint and workspace file persistence
 - Command palette: `Ctrl/Cmd + K` for navigation and simulated actions
 - Theme system: dark/light mode with improved light-mode readability
-- Data layer: mock-first for UI and workflow iteration
+- Workspace state persistence:
+  - Config and history are stored under `<workspace>/.ezscholar/`
+  - `config.json` (provider/url/key/theme/workspace), `history/events.jsonl`, `state/module-snapshots.json`
+  - Module 1 reminders and module activities can be restored after refresh
+
+> Security note: API keys are currently stored in plaintext in `<workspace>/.ezscholar/config.json`. Do not commit this directory.
 
 ---
 

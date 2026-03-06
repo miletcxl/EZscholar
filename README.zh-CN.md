@@ -66,7 +66,12 @@ EZscholar 的目标是把这些高频痛点收束成一个统一工作流。
   - 支持下载流与 workspace 文件持久化
 - 命令面板：`Ctrl/Cmd + K`，支持导航与模拟动作
 - 主题系统：深浅色主题切换，浅色模式下导航与正文对比度已优化
-- 数据层：当前为 mock-first（便于先行联调与界面迭代）
+- Workspace 状态持久化：
+  - 配置与历史统一写入 `<workspace>/.ezscholar/`
+  - 包含 `config.json`（provider/url/key/theme/workspace）、`history/events.jsonl`、`state/module-snapshots.json`
+  - 模块一提醒与活动流支持刷新后恢复
+
+> 安全提示：当前 API Key 以明文存储在 `<workspace>/.ezscholar/config.json`，请勿提交该目录到公开仓库。
 
 ---
 
