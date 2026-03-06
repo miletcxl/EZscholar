@@ -86,15 +86,11 @@ Implemented capabilities:
 
 ### Module 2 Docs Maker E2E (Chat-Driven)
 
-- Verified workflow:
-  - Input draft: `C:\Users\25336\Desktop\UniHelper\workspace\docs-maker\drafts\1772727486726-____________04-________________________2-2022210090-______-20250331.docx`
-  - Generated PDF: `C:\Users\25336\Desktop\UniHelper\workspace\docs-maker\output\report-20250331.pdf`
-  - Conversation snapshot: `docs/images/chat_2.png`
-  - Rendered PDF snapshot (page 1): `docs/images/report-20250331-page1.png`
+[Click to view chat snapshot](./docs/images/chat_2.png) · [Click to view rendered PDF snapshot](./docs/images/report-page1.png)
 
 <p align="center">
-  <img src="./docs/images/chat_2.png" alt="Module2Chat" width="72%" />
-  <img src="./docs/images/report-20250331-page1.png" alt="Module2PdfPage1" width="25%" />
+  <img src="./docs/images/chat_2.png" alt="Module2Chat" height="420" />
+  <img src="./docs/images/report-page1.png" alt="Module2PdfPage1" height="420" />
 </p>
 
 ---

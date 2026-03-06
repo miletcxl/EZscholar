@@ -86,15 +86,11 @@ EZscholar 的目标是把这些高频痛点收束成一个统一工作流。
 
 ### 模块二 Docs Maker 端到端实测（AI/自主驱动）
 
-- 已验证流程：
-  - 输入草稿：`C:\Users\25336\Desktop\UniHelper\workspace\docs-maker\drafts\1772727486726-____________04-________________________2-2022210090-______-20250331.docx`
-  - 生成 PDF：`C:\Users\25336\Desktop\UniHelper\workspace\docs-maker\output\report-20250331.pdf`
-  - 对话截图：`docs/images/chat_2.png`
-  - 渲染 PDF 截图（第 1 页）：`docs/images/report-20250331-page1.png`
+[点击查看对话截图](./docs/images/chat_2.png) · [点击查看 PDF 渲染效果](./docs/images/report-page1.png)
 
 <p align="center">
-  <img src="./docs/images/chat_2.png" alt="Module2Chat" width="72%" />
-  <img src="./docs/images/report-20250331-page1.png" alt="Module2PdfPage1" width="25%" />
+  <img src="./docs/images/chat_2.png" alt="Module2Chat" height="420" />
+  <img src="./docs/images/report-page1.png" alt="Module2PdfPage1" height="420" />
 </p>
 
 ---
