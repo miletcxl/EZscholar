@@ -22,7 +22,7 @@
 
 ---
 
-## 为什么做这个项目（痛点）
+## 为什么做这个项目
 
 传统工具把科研流程切得很碎：
 
@@ -90,8 +90,10 @@ EZscholar 的目标是把这些高频痛点收束成一个统一工作流。
   - 输入草稿：`C:\Users\25336\Desktop\UniHelper\workspace\docs-maker\drafts\1772727486726-____________04-________________________2-2022210090-______-20250331.docx`
   - 生成 PDF：`C:\Users\25336\Desktop\UniHelper\workspace\docs-maker\output\report-20250331.pdf`
   - 对话截图：`docs/images/chat_2.png`
+  - 渲染 PDF 截图（第 1 页）：`docs/images/report-20250331-page1.png`
 
 ![Module2Chat](./docs/images/chat_2.png)
+![Module2PdfPage1](./docs/images/report-20250331-page1.png)
 
 ---
 

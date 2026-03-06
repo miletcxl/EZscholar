@@ -90,8 +90,10 @@ Implemented capabilities:
   - Input draft: `C:\Users\25336\Desktop\UniHelper\workspace\docs-maker\drafts\1772727486726-____________04-________________________2-2022210090-______-20250331.docx`
   - Generated PDF: `C:\Users\25336\Desktop\UniHelper\workspace\docs-maker\output\report-20250331.pdf`
   - Conversation snapshot: `docs/images/chat_2.png`
+  - Rendered PDF snapshot (page 1): `docs/images/report-20250331-page1.png`
 
 ![Module2Chat](./docs/images/chat_2.png)
+![Module2PdfPage1](./docs/images/report-20250331-page1.png)
 
 ---
 
