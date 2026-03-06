@@ -92,8 +92,10 @@ Implemented capabilities:
   - Conversation snapshot: `docs/images/chat_2.png`
   - Rendered PDF snapshot (page 1): `docs/images/report-20250331-page1.png`
 
-![Module2Chat](./docs/images/chat_2.png)
-![Module2PdfPage1](./docs/images/report-20250331-page1.png)
+<p align="center">
+  <img src="./docs/images/chat_2.png" alt="Module2Chat" width="72%" />
+  <img src="./docs/images/report-20250331-page1.png" alt="Module2PdfPage1" width="25%" />
+</p>
 
 ---
 
