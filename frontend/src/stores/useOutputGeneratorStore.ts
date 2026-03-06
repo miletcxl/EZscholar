@@ -36,7 +36,7 @@ const DEFAULT_SLIDES_CONFIG: SlidesModuleConfig = {
   ],
   marp: {
     command: 'marp',
-    baseArgs: ['--allow-local-files'],
+    baseArgs: ['--allow-local-files', '--no-stdin'],
     timeoutMs: 120_000,
   },
 };
@@ -63,14 +63,20 @@ function normalizeSlidesConfig(input?: Partial<SlidesModuleConfig>): SlidesModul
     ? (input.defaultProviderId as string)
     : fallbackProviderId;
 
+  const normalizedBaseArgs = Array.isArray(input.marp?.baseArgs) && input.marp.baseArgs.length > 0
+    ? input.marp.baseArgs.map((arg) => arg.trim()).filter(Boolean)
+    : [...DEFAULT_SLIDES_CONFIG.marp.baseArgs];
+
+  if (!normalizedBaseArgs.includes('--no-stdin')) {
+    normalizedBaseArgs.push('--no-stdin');
+  }
+
   return {
     defaultProviderId,
     providers,
     marp: {
       command: input.marp?.command?.trim() || DEFAULT_SLIDES_CONFIG.marp.command,
-      baseArgs: Array.isArray(input.marp?.baseArgs) && input.marp.baseArgs.length > 0
-        ? input.marp.baseArgs
-        : DEFAULT_SLIDES_CONFIG.marp.baseArgs,
+      baseArgs: normalizedBaseArgs,
       timeoutMs: typeof input.marp?.timeoutMs === 'number' ? input.marp.timeoutMs : DEFAULT_SLIDES_CONFIG.marp.timeoutMs,
     },
   };
@@ -153,4 +159,3 @@ export const useOutputGeneratorStore = create<OutputGeneratorState>()(
     },
   ),
 );
-

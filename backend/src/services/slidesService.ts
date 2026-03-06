@@ -72,7 +72,7 @@ function createDefaultSlidesConfig(): SlidesModuleConfig {
     providers: [],
     marp: {
       command: 'marp',
-      baseArgs: ['--allow-local-files'],
+      baseArgs: ['--allow-local-files', '--no-stdin'],
       timeoutMs: 120_000,
     },
   };
@@ -294,7 +294,11 @@ async function renderMarkdownToPptxWithMarp(params: {
   marp: SlidesModuleConfig['marp'];
 }) {
   const marp = params.marp ?? createDefaultSlidesConfig().marp;
-  const args = [...(marp.baseArgs ?? []), params.markdownFilePath, '--pptx', '-o', params.outputPath];
+  const baseArgs = [...(marp.baseArgs ?? [])];
+  if (!baseArgs.includes('--no-stdin')) {
+    baseArgs.push('--no-stdin');
+  }
+  const args = [...baseArgs, params.markdownFilePath, '--pptx', '-o', params.outputPath];
 
   try {
     await execFile(marp.command || 'marp', args, {

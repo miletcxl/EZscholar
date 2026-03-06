@@ -125,7 +125,7 @@ function createDefaultWorkspaceConfig(workspacePath: string): WorkspaceConfig {
           providers: [],
           marp: {
             command: 'marp',
-            baseArgs: ['--allow-local-files'],
+            baseArgs: ['--allow-local-files', '--no-stdin'],
             timeoutMs: 120_000,
           },
         },

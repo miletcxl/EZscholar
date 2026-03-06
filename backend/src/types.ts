@@ -44,7 +44,7 @@ export const SlidesProviderConfigSchema = z.object({
 
 export const SlidesMarpConfigSchema = z.object({
   command: z.string().min(1).default('marp'),
-  baseArgs: z.array(z.string()).default(['--allow-local-files']),
+  baseArgs: z.array(z.string()).default(['--allow-local-files', '--no-stdin']),
   timeoutMs: z.number().int().positive().default(120_000),
 });
 
@@ -53,7 +53,7 @@ export const SlidesModuleConfigSchema = z.object({
   providers: z.array(SlidesProviderConfigSchema).default([]),
   marp: SlidesMarpConfigSchema.default({
     command: 'marp',
-    baseArgs: ['--allow-local-files'],
+    baseArgs: ['--allow-local-files', '--no-stdin'],
     timeoutMs: 120_000,
   }),
 });

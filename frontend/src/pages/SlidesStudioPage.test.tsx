@@ -27,7 +27,7 @@ describe('SlidesStudioPage', () => {
         ],
         marp: {
           command: 'marp',
-          baseArgs: ['--allow-local-files'],
+          baseArgs: ['--allow-local-files', '--no-stdin'],
           timeoutMs: 120000,
         },
       },
