@@ -86,7 +86,7 @@ Implemented capabilities:
 
 ### Module 2 Docs Maker E2E (Chat-Driven)
 
-[Click to view chat snapshot](./docs/images/chat_2.png) · [Click to view rendered PDF snapshot](./docs/images/report-page1.png)
+[Click to view rendered PDF](./docs/report-20250331.pdf)
 
 <table align="center">
   <tr>

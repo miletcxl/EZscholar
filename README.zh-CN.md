@@ -86,7 +86,7 @@ EZscholar 的目标是把这些高频痛点收束成一个统一工作流。
 
 ### 模块二 Docs Maker 端到端实测（AI/自主驱动）
 
-[点击查看对话截图](./docs/images/chat_2.png) · [点击查看 PDF 渲染效果](./docs/images/report-page1.png)
+[点击查看 PDF 文件](./docs/report-20250331.pdf)
 
 <table align="center">
   <tr>
