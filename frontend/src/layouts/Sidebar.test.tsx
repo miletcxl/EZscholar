@@ -26,9 +26,9 @@ describe('Sidebar', () => {
     const activityLink = screen.getByRole('link', { name: /活动时间线/i });
     expect(activityLink).toHaveClass('active');
 
-    await user.click(screen.getByRole('link', { name: /首页总览/i }));
+    await user.click(screen.getByRole('link', { name: /总览/i }));
 
-    const homeLink = screen.getByRole('link', { name: /首页总览/i });
+    const homeLink = screen.getByRole('link', { name: /总览/i });
     expect(homeLink).toHaveClass('active');
   });
 });

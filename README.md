@@ -39,7 +39,12 @@ EZscholar aims to unify these high-frequency pain points into one workflow.
 
 ## Current Features
 
-The repository currently ships a frontend console (React + TypeScript + Vite) with:
+The repository now ships:
+
+- `frontend` console (React + TypeScript + Vite)
+- `backend` local Docs Maker bridge service (Express + Mammoth + Pandoc bridge)
+
+Implemented capabilities:
 
 - Routes and pages:
   - `/`: AI Chat (default home)
@@ -49,8 +54,16 @@ The repository currently ships a frontend console (React + TypeScript + Vite) wi
   - `/modules/*`: Module detail pages (Deadline / Remote / Flow / Output / Research / Socratic)
 - Agentic AI chat:
   - OpenAI-compatible Chat Completions integration
-  - Function-calling tools: `schedule_reminder` / `list_reminders` / `cancel_reminder`
+  - Function-calling tools:
+    - `schedule_reminder` / `list_reminders` / `cancel_reminder`
+    - `parse_word_draft` / `render_academic_report` / `generate_presentation_slides` (stub)
   - In-chat tool action cards, plus local notifications and toast delivery
+- Module 2 Docs Maker:
+  - Upload `.docx` draft to workspace
+  - Parse Word draft to Markdown with extracted image placeholders
+  - Render polished Markdown to `pdf`/`docx` (`typst` first, `pandoc` fallback for PDF)
+  - Default output target: `workspace/docs-maker/output/report-<timestamp>.pdf`
+  - Download stream endpoint and workspace file persistence
 - Command palette: `Ctrl/Cmd + K` for navigation and simulated actions
 - Theme system: dark/light mode with improved light-mode readability
 - Data layer: mock-first for UI and workflow iteration
@@ -71,6 +84,15 @@ The repository currently ships a frontend console (React + TypeScript + Vite) wi
 | --- | --- |
 | ![DeadlineEngineDark](./docs/images/deadline-engine-dark.png) | ![DeadlineEngineLight](./docs/images/deadline-engine-light.png) |
 
+### Module 2 Docs Maker E2E (Chat-Driven)
+
+- Verified workflow:
+  - Input draft: `C:\Users\25336\Desktop\UniHelper\workspace\docs-maker\drafts\1772727486726-____________04-________________________2-2022210090-______-20250331.docx`
+  - Generated PDF: `C:\Users\25336\Desktop\UniHelper\workspace\docs-maker\output\report-20250331.pdf`
+  - Conversation snapshot: `docs/images/chat_2.png`
+
+![Module2Chat](./docs/images/chat_2.png)
+
 ---
 
 ## Quick Start
@@ -78,11 +100,25 @@ The repository currently ships a frontend console (React + TypeScript + Vite) wi
 ### 1. Install Dependencies
 
 ```bash
+cd backend
+npm install
+
 cd frontend
 npm install
 ```
 
-### 2. (Optional) Configure Local Environment Variables
+### 2. Start Local Docs Maker Backend
+
+```bash
+cd backend
+npm run dev
+```
+
+Default backend URL:
+
+- `http://127.0.0.1:8787`
+
+### 3. (Optional) Configure Local Environment Variables
 
 Create/update `frontend/.env.local`:
 
@@ -98,9 +134,10 @@ VITE_QWEN_MODEL=qwen-plus
 
 Note: `.env.local` is git-ignored. Do not commit real API keys into source code or README files.
 
-### 3. Start Development Server
+### 4. Start Frontend Development Server
 
 ```bash
+cd frontend
 npm run dev
 ```
 
@@ -108,9 +145,12 @@ Default local URL (check terminal output first):
 
 - `http://127.0.0.1:5173`
 
-### 4. Build and Preview Production
+`/api/docs-maker/*` is proxied by Vite to the backend service in development.
+
+### 5. Build and Preview Production
 
 ```bash
+cd frontend
 npm run build
 npm run preview -- --host 127.0.0.1 --port 4173
 ```
@@ -124,6 +164,11 @@ Preview URL:
 ## Test Commands
 
 ```bash
+cd backend
+npm test
+npm run build
+
+cd ../frontend
 npm run lint
 npm run test
 npm run test:e2e
@@ -138,13 +183,17 @@ UniHelperCode/
 ├── README.md
 ├── README.zh-CN.md
 ├── docs/images/                 # README screenshot assets
+├── backend/
+│   ├── src/routes/              # docs-maker routes
+│   ├── src/services/            # path guard / parser / renderer / slides stub
+│   └── src/types.ts             # zod schemas + response types
 └── frontend/
     ├── src/
     │   ├── app/                 # Router, navigation, QueryClient
     │   ├── layouts/             # AppShell / Sidebar / TopHeader
     │   ├── pages/               # Chat / Overview / Activity / Settings / ModuleDetail
     │   ├── features/            # dashboard / settings / modules / command-palette
-    │   ├── services/            # api mock + llm + agent tools + notifier
+    │   ├── services/            # api mock + llm + agent tools + docs-maker client + notifier
     │   ├── stores/              # UI / LLM / Chat / Notifier / Workspace
     │   └── styles/              # tokens + component styles
     ├── e2e/                     # Playwright tests
@@ -158,7 +207,7 @@ UniHelperCode/
 1. Start the app and open AI Chat (`/`) by default.
 2. Configure your active LLM provider in `/settings`.
 3. Try prompts like "Remind me in 30 minutes to ..." to validate tool calling.
-4. Open `/overview` and module detail pages to inspect dashboards and execution records.
+4. Open `/modules/output-generator` to upload a `.docx`, parse markdown, and render `pdf/docx` (recommended output dir: `docs-maker/output`).
 5. Use `Ctrl/Cmd + K` for fast navigation and action simulation.
 
 ---
@@ -168,8 +217,8 @@ UniHelperCode/
 - Integrate real backend APIs (while keeping mock fallback)
 - Add module-level real-time status subscriptions (WebSocket/SSE)
 - Persist reminders and chat history
+- Add real PPTX generation (replace slides stub)
 - Expand bilingual UX across the product
-- End-to-end integration for report generation and literature workflows
 
 ---
 

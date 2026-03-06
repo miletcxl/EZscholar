@@ -30,6 +30,12 @@
     --chat-input-hint: #444;
     --chat-send-disabled-bg: #333;
     --chat-send-disabled-color: #555;
+    --chat-upload-btn-bg: #222;
+    --chat-upload-btn-border: #333;
+    --chat-upload-btn-color: #d4d4d8;
+    --chat-upload-btn-hover-bg: #2a2a2a;
+    --chat-upload-status: #9ca3af;
+    --chat-upload-error: #f87171;
     display: flex;
     flex-direction: column;
     height: calc(100vh - 48px);
@@ -68,6 +74,12 @@
     --chat-input-hint: #6b7280;
     --chat-send-disabled-bg: #d1d5db;
     --chat-send-disabled-color: #94a3b8;
+    --chat-upload-btn-bg: #ffffff;
+    --chat-upload-btn-border: #d1d5db;
+    --chat-upload-btn-color: #1f2937;
+    --chat-upload-btn-hover-bg: #f8fafc;
+    --chat-upload-status: #334155;
+    --chat-upload-error: #dc2626;
 }
 
 /* ── Header ── */
@@ -324,6 +336,60 @@
     background: var(--chat-input-area-bg);
 }
 
+.chat-upload-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+    min-width: 0;
+}
+
+.chat-upload-input {
+    display: none;
+}
+
+.chat-upload-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 8px;
+    border: 1px solid var(--chat-upload-btn-border);
+    background: var(--chat-upload-btn-bg);
+    color: var(--chat-upload-btn-color);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1;
+    padding: 8px 10px;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+}
+
+.chat-upload-btn:hover:not(:disabled) {
+    border-color: #5865f2;
+    background: var(--chat-upload-btn-hover-bg);
+}
+
+.chat-upload-btn:disabled {
+    opacity: 0.65;
+    cursor: default;
+}
+
+.chat-upload-status {
+    font-size: 11px;
+    color: var(--chat-upload-status);
+    min-width: 0;
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.chat-upload-error {
+    margin: 0 0 8px;
+    font-size: 12px;
+    color: var(--chat-upload-error);
+}
+
 .chat-input-box {
     display: flex;
     align-items: flex-end;
@@ -396,6 +462,20 @@
     font-size: 11px;
     color: var(--chat-input-hint);
     text-align: center;
+}
+
+.spin {
+    animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 /* ── Tool Action Chips ─────────────────────────────────────────────────────── */

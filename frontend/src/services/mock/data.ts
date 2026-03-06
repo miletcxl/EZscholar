@@ -103,8 +103,8 @@ export const mockModuleDetails: ModuleDetailDTO[] = [
   {
     id: 'output-generator',
     description:
-      '自动处理实验数据、生成图表并编译 Typst 报告，保持数据脚本和产物可追溯。',
-    capabilities: ['数据清洗脚本生成', '图表渲染', 'Typst 编译', '报告产物溯源'],
+      '上传 Word 草稿后自动解析为 Markdown 并渲染 PDF/DOCX，支持图片资产提取、下载与落盘。',
+    capabilities: ['DOCX 解析', 'Markdown 复用渲染', 'PDF/DOCX 导出', '产物路径追踪'],
     recentRuns: [
       { id: 'run-og-1', name: 'AUC 对比实验报告', state: '已完成', startedAt: '2026-03-05T06:05:00Z' },
       { id: 'run-og-2', name: '课程实验周报', state: '编译中', startedAt: '2026-03-05T03:35:00Z' },
@@ -187,7 +187,7 @@ export const mockActivityEvents: ActivityEventDTO[] = [
     at: '2026-03-05T08:18:00Z',
     level: 'success',
     source: 'output-generator',
-    message: 'AUC 对比实验报告已生成并归档到 /reports/auc-compare.pdf',
+    message: '课程实验报告已生成并归档到 /docs-maker/output/report-20250331.pdf',
   },
   {
     id: 'evt-2',

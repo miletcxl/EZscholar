@@ -11,7 +11,7 @@ export const BUILT_IN_PROVIDERS: LLMProviderConfig[] = [
         baseUrl: import.meta.env.VITE_LOCAL_API_BASE_URL ?? 'http://127.0.0.1:8045/v1',
         apiKey: import.meta.env.VITE_LOCAL_API_KEY ?? '',
         defaultModel: import.meta.env.VITE_LOCAL_MODEL ?? 'gemini-3-flash',
-        timeoutMs: 60_000,
+        timeoutMs: 180_000,
     },
     {
         id: 'qwen',
@@ -19,7 +19,7 @@ export const BUILT_IN_PROVIDERS: LLMProviderConfig[] = [
         baseUrl: import.meta.env.VITE_QWEN_API_BASE_URL ?? 'https://dashscope.aliyuncs.com/compatible-mode/v1',
         apiKey: import.meta.env.VITE_QWEN_API_KEY ?? '',
         defaultModel: import.meta.env.VITE_QWEN_MODEL ?? 'qwen-plus',
-        timeoutMs: 30_000,
+        timeoutMs: 120_000,
     },
 ];
 

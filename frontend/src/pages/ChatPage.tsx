@@ -2,9 +2,11 @@
 // Full-screen AI chat interface. Uses the active LLM provider from useLlmStore.
 
 import { useEffect, useRef, useState } from 'react';
-import { ArrowUp, Bot, RotateCcw, User } from 'lucide-react';
+import { ArrowUp, Bot, Loader2, Paperclip, RotateCcw, User } from 'lucide-react';
 import { useChatStore } from '../stores/useChatStore';
 import { useLlmStore } from '../stores/useLlmStore';
+import { uploadDraft } from '../services/docs-maker/client';
+import { useWorkspaceStore } from '../stores/useWorkspaceStore';
 import './ChatPage.css';
 
 // ─── Message bubble ───────────────────────────────────────────────────────────
@@ -81,16 +83,56 @@ function EmptyChat({ activeLabel }: { activeLabel: string }) {
 export function ChatPage() {
     const { messages, isLoading, error, sendMessage, clearHistory } = useChatStore();
     const { providers, activeProviderId } = useLlmStore();
+    const { workspacePath } = useWorkspaceStore();
     const activeProvider = providers.find((p) => p.id === activeProviderId);
 
     const [input, setInput] = useState('');
+    const [isUploadingDraft, setIsUploadingDraft] = useState(false);
+    const [uploadStatus, setUploadStatus] = useState('');
+    const [uploadError, setUploadError] = useState('');
     const listRef = useRef<HTMLDivElement>(null);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    function joinPath(base: string, ...segments: string[]) {
+        const useBackslash = /\\/.test(base);
+        const sep = useBackslash ? '\\' : '/';
+        const normalizedBase = base.replace(/[\\/]+$/, '');
+        const normalizedSegments = segments
+            .map((segment) => segment.replace(/[\\/]+/g, sep).replace(/^[\\/]+|[\\/]+$/g, ''))
+            .filter(Boolean);
+
+        if (normalizedSegments.length === 0) {
+            return normalizedBase;
+        }
+
+        return [normalizedBase, ...normalizedSegments].join(sep);
+    }
+
+    function buildParsePrompt(savedFilePath: string) {
+        const assetDir = joinPath(workspacePath, 'docs-maker', 'assets', String(Date.now()));
+        return [
+            '请调用 parse_word_draft 工具解析我刚上传的文档，并严格使用以下参数：',
+            '{',
+            `  "input_file_path": "${savedFilePath}",`,
+            `  "output_asset_dir": "${assetDir}",`,
+            `  "workspace_path": "${workspacePath}"`,
+            '}',
+            '',
+            '解析完成后先告诉我提取到的图片数量，并展示 markdown 内容摘要。',
+        ].join('\n');
+    }
 
     // Auto-scroll on new messages
     useEffect(() => {
         listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: 'smooth' });
     }, [messages]);
+
+    function syncTextareaHeight() {
+        if (!textareaRef.current) return;
+        textareaRef.current.style.height = 'auto';
+        textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 160)}px`;
+    }
 
     function handleSend() {
         if (!input.trim() || isLoading) return;
@@ -98,6 +140,44 @@ export function ChatPage() {
         setInput('');
         // Reset textarea height
         if (textareaRef.current) textareaRef.current.style.height = 'auto';
+    }
+
+    async function handleDraftUpload(event: React.ChangeEvent<HTMLInputElement>) {
+        const file = event.target.files?.[0];
+        event.target.value = '';
+
+        if (!file) return;
+
+        setUploadError('');
+        setUploadStatus('');
+
+        if (!file.name.toLowerCase().endsWith('.docx')) {
+            setUploadError('仅支持上传 .docx 文件。');
+            return;
+        }
+
+        if (!workspacePath.trim()) {
+            setUploadError('workspace 路径未配置，请先到设置页填写。');
+            return;
+        }
+
+        setIsUploadingDraft(true);
+        try {
+            const result = await uploadDraft({
+                file,
+                workspacePath,
+                subDir: 'docs-maker/drafts',
+            });
+            const prompt = buildParsePrompt(result.savedFilePath);
+            setInput((prev) => (prev.trim() ? `${prev.trim()}\n\n${prompt}` : prompt));
+            setUploadStatus(`已上传：${result.savedFilePath}`);
+            requestAnimationFrame(syncTextareaHeight);
+        } catch (err) {
+            const message = err instanceof Error ? err.message : String(err);
+            setUploadError(`上传失败：${message}`);
+        } finally {
+            setIsUploadingDraft(false);
+        }
     }
 
     function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
@@ -164,6 +244,27 @@ export function ChatPage() {
 
             {/* Input area */}
             <div className="chat-input-area">
+                <div className="chat-upload-row">
+                    <input
+                        ref={fileInputRef}
+                        className="chat-upload-input"
+                        type="file"
+                        accept=".docx"
+                        onChange={handleDraftUpload}
+                        disabled={isLoading || isUploadingDraft}
+                    />
+                    <button
+                        className="chat-upload-btn"
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        disabled={isLoading || isUploadingDraft}
+                    >
+                        {isUploadingDraft ? <Loader2 size={14} className="spin" /> : <Paperclip size={14} />}
+                        上传文件(.docx)
+                    </button>
+                    {uploadStatus && <span className="chat-upload-status">{uploadStatus}</span>}
+                </div>
+                {uploadError && <p className="chat-upload-error">{uploadError}</p>}
                 <div className="chat-input-box">
                     <textarea
                         ref={textareaRef}

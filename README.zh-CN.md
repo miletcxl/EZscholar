@@ -39,7 +39,12 @@ EZscholar 的目标是把这些高频痛点收束成一个统一工作流。
 
 ## 当前功能
 
-目前仓库已落地前端控制台（React + TypeScript + Vite），核心功能包括：
+当前仓库包含：
+
+- `frontend` 前端控制台（React + TypeScript + Vite）
+- `backend` 本地 Docs Maker Bridge（Express + Mammoth + Pandoc 桥接）
+
+已实现能力包括：
 
 - 路由与页面：
   - `/`：`AI 对话`（Chat，默认首页）
@@ -49,8 +54,16 @@ EZscholar 的目标是把这些高频痛点收束成一个统一工作流。
   - `/modules/*`：模块详情（Deadline / Remote / Flow / Output / Research / Socratic）
 - AI 对话（Agentic Chat）：
   - 支持 OpenAI compatible Chat Completions
-  - 已接入函数调用工具：`schedule_reminder` / `list_reminders` / `cancel_reminder`
+  - 已接入函数调用工具：
+    - `schedule_reminder` / `list_reminders` / `cancel_reminder`
+    - `parse_word_draft` / `render_academic_report` / `generate_presentation_slides`（stub）
   - 对话内可展示工具执行卡片，提醒触发可落到本地通知与 Toast
+- 模块二 Docs Maker：
+  - 上传 `.docx` 草稿并落盘到 workspace
+  - 解析 Word 草稿为 Markdown，并提取图片占位路径
+  - 将润色后的 Markdown 渲染为 `pdf`/`docx`（`typst` 优先，PDF 失败自动回退 `pandoc`）
+  - 默认报告输出目录：`workspace/docs-maker/output/report-<timestamp>.pdf`
+  - 支持下载流与 workspace 文件持久化
 - 命令面板：`Ctrl/Cmd + K`，支持导航与模拟动作
 - 主题系统：深浅色主题切换，浅色模式下导航与正文对比度已优化
 - 数据层：当前为 mock-first（便于先行联调与界面迭代）
@@ -71,6 +84,15 @@ EZscholar 的目标是把这些高频痛点收束成一个统一工作流。
 | --- | --- |
 | ![DeadlineEngineDark](./docs/images/deadline-engine-dark.png) | ![DeadlineEngineLight](./docs/images/deadline-engine-light.png) |
 
+### 模块二 Docs Maker 端到端实测（AI 对话）
+
+- 已验证流程：
+  - 输入草稿：`C:\Users\25336\Desktop\UniHelper\workspace\docs-maker\drafts\1772727486726-____________04-________________________2-2022210090-______-20250331.docx`
+  - 生成 PDF：`C:\Users\25336\Desktop\UniHelper\workspace\docs-maker\output\report-20250331.pdf`
+  - 对话截图：`docs/images/chat_2.png`
+
+![Module2Chat](./docs/images/chat_2.png)
+
 ---
 
 ## 快速开始
@@ -78,11 +100,25 @@ EZscholar 的目标是把这些高频痛点收束成一个统一工作流。
 ### 1. 安装依赖
 
 ```bash
+cd backend
+npm install
+
 cd frontend
 npm install
 ```
 
-### 2. （可选）配置本地环境变量
+### 2. 启动本地 Docs Maker 后端
+
+```bash
+cd backend
+npm run dev
+```
+
+默认地址：
+
+- `http://127.0.0.1:8787`
+
+### 3. （可选）配置本地环境变量
 
 在 `frontend/.env.local` 中按需配置：
 
@@ -98,9 +134,10 @@ VITE_QWEN_MODEL=qwen-plus
 
 注意：`.env.local` 已被忽略，不会提交到 Git。请不要把真实密钥写进源码或 README。
 
-### 3. 本地启动
+### 4. 启动前端开发服务器
 
 ```bash
+cd frontend
 npm run dev
 ```
 
@@ -108,9 +145,12 @@ npm run dev
 
 - `http://127.0.0.1:5173`
 
-### 4. 生产预览
+开发环境下，`/api/docs-maker/*` 会通过 Vite Proxy 转发到本地 backend。
+
+### 5. 生产预览
 
 ```bash
+cd frontend
 npm run build
 npm run preview -- --host 127.0.0.1 --port 4173
 ```
@@ -124,6 +164,11 @@ npm run preview -- --host 127.0.0.1 --port 4173
 ## 测试命令
 
 ```bash
+cd backend
+npm test
+npm run build
+
+cd ../frontend
 npm run lint
 npm run test
 npm run test:e2e
@@ -138,13 +183,17 @@ UniHelperCode/
 ├── README.md
 ├── README.zh-CN.md
 ├── docs/images/                 # README 截图资源
+├── backend/
+│   ├── src/routes/              # docs-maker 路由
+│   ├── src/services/            # path guard / parser / renderer / slides stub
+│   └── src/types.ts             # zod schema 与响应类型
 └── frontend/
     ├── src/
     │   ├── app/                 # 路由、导航、QueryClient
     │   ├── layouts/             # AppShell / Sidebar / TopHeader
     │   ├── pages/               # Chat / Overview / Activity / Settings / ModuleDetail
     │   ├── features/            # dashboard / settings / modules / command-palette
-    │   ├── services/            # api mock + llm + agent tools + notifier
+    │   ├── services/            # api mock + llm + agent tools + docs-maker client + notifier
     │   ├── stores/              # UI / LLM / Chat / Notifier / Workspace
     │   └── styles/              # token + 组件样式
     ├── e2e/                     # Playwright 用例
@@ -157,7 +206,7 @@ UniHelperCode/
 
 1. 启动后默认进入 `AI 对话`（`/`），先在设置页配置可用 LLM Provider。
 2. 在对话页尝试“X 分钟后提醒我做 Y”，验证工具调用与本地提醒链路。
-3. 打开 `/overview` 查看总览卡片与近期活动，再进入各模块详情页查看指标与执行记录。
+3. 打开 `/modules/output-generator`，上传 `.docx`，解析 Markdown，再渲染 `pdf/docx`（建议输出到 `docs-maker/output`）。
 4. 按 `Ctrl/Cmd + K` 打开命令面板，快速导航或触发模拟动作。
 
 ---
@@ -167,8 +216,8 @@ UniHelperCode/
 - 接入真实后端 API（保留 mock fallback）
 - 增加模块级别实时状态订阅（WebSocket/SSE）
 - 增加提醒数据与对话历史持久化
+- 接入真实 PPTX 生成（替换 slides stub）
 - 提供中英双语
-- 输出报告与文献能力的端到端联调
 
 ---
 

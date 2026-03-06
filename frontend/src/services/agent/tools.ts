@@ -72,4 +72,102 @@ export const AGENT_TOOLS: ChatCompletionTool[] = [
             },
         },
     },
+
+    // ── Docs Maker: parse draft ──────────────────────────────────────────────
+    {
+        type: 'function',
+        function: {
+            name: 'parse_word_draft',
+            description:
+                '解析本地 .docx 草稿并提取图片到指定目录，返回包含图片占位符的 markdown 文本。',
+            parameters: {
+                type: 'object',
+                properties: {
+                    input_file_path: {
+                        type: 'string',
+                        description: '原始 .docx 草稿的绝对路径或 workspace 内相对路径。',
+                    },
+                    output_asset_dir: {
+                        type: 'string',
+                        description: '解析时提取出的图片保存目录（必须在 workspace 内）。',
+                    },
+                    workspace_path: {
+                        type: 'string',
+                        description: '工作区根路径。若未提供将使用当前应用设置中的 workspace。',
+                    },
+                },
+                required: ['input_file_path', 'output_asset_dir'],
+            },
+        },
+    },
+
+    // ── Docs Maker: render report ────────────────────────────────────────────
+    {
+        type: 'function',
+        function: {
+            name: 'render_academic_report',
+            description:
+                '将 markdown 学术报告渲染为 PDF 或 DOCX。PDF 优先使用 typst，失败自动回退到 xelatex。' +
+                '优先使用 use_last_parsed_markdown=true 复用刚解析的内容，避免传超长 markdown。',
+            parameters: {
+                type: 'object',
+                properties: {
+                    markdown_content: {
+                        type: 'string',
+                        description: 'LLM 润色后的 markdown 内容，需保留图片占位符路径。',
+                    },
+                    markdown_source_file_path: {
+                        type: 'string',
+                        description: '已解析草稿的源文件路径。若命中缓存，可据此复用 markdown。',
+                    },
+                    use_last_parsed_markdown: {
+                        type: 'boolean',
+                        description: '若为 true，直接复用当前会话里最近一次 parse_word_draft 的 markdown。',
+                    },
+                    format: {
+                        type: 'string',
+                        enum: ['pdf', 'docx'],
+                        description: '输出格式。',
+                    },
+                    output_path: {
+                        type: 'string',
+                        description: '最终报告输出路径（必须位于 workspace 内）。',
+                    },
+                    workspace_path: {
+                        type: 'string',
+                        description: '工作区根路径。若未提供将使用当前应用设置中的 workspace。',
+                    },
+                },
+                required: ['format', 'output_path'],
+            },
+        },
+    },
+
+    // ── Docs Maker: slides stub ──────────────────────────────────────────────
+    {
+        type: 'function',
+        function: {
+            name: 'generate_presentation_slides',
+            description:
+                '根据大纲生成幻灯片（当前为占位实现，返回固定成功信息，不会真正生成 PPTX）。',
+            parameters: {
+                type: 'object',
+                properties: {
+                    slide_outline_markdown: {
+                        type: 'string',
+                        description: '幻灯片大纲 markdown 文本。',
+                    },
+                    output_path: {
+                        type: 'string',
+                        description: '目标 PPTX 路径（占位参数）。',
+                    },
+                    workspace_path: {
+                        type: 'string',
+                        description: '工作区根路径。若未提供将使用当前应用设置中的 workspace。',
+                    },
+                },
+                required: ['slide_outline_markdown', 'output_path'],
+            },
+        },
+    },
 ];

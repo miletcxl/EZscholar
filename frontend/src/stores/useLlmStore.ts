@@ -24,6 +24,29 @@ interface LlmState {
     runTest: (id: string) => Promise<void>;
 }
 
+function mergeProvidersWithBuiltIns(providers: LLMProviderConfig[]): LLMProviderConfig[] {
+    const builtInIds = new Set(BUILT_IN_PROVIDERS.map((provider) => provider.id));
+
+    const mergedBuiltIns = BUILT_IN_PROVIDERS.map((builtInProvider) => {
+        const persistedProvider = providers.find((provider) => provider.id === builtInProvider.id);
+        if (!persistedProvider) {
+            return builtInProvider;
+        }
+
+        // Keep user-editable fields from persisted config, but always refresh
+        // built-in metadata/defaults (including timeout) from latest code.
+        return {
+            ...persistedProvider,
+            id: builtInProvider.id,
+            label: builtInProvider.label,
+            timeoutMs: builtInProvider.timeoutMs,
+        };
+    });
+
+    const customProviders = providers.filter((provider) => !builtInIds.has(provider.id));
+    return [...mergedBuiltIns, ...customProviders];
+}
+
 export const useLlmStore = create<LlmState>()(
     persist(
         (set, get) => ({
@@ -77,6 +100,23 @@ export const useLlmStore = create<LlmState>()(
                 activeProviderId: state.activeProviderId,
                 providers: state.providers,
             }),
+            merge: (persistedState, currentState) => {
+                const partial = (persistedState as Partial<LlmState>) ?? {};
+                const mergedProviders = mergeProvidersWithBuiltIns(
+                    Array.isArray(partial.providers) ? partial.providers : currentState.providers,
+                );
+
+                const activeProviderId = partial.activeProviderId && mergedProviders.some((provider) => provider.id === partial.activeProviderId)
+                    ? partial.activeProviderId
+                    : DEFAULT_PROVIDER_ID;
+
+                return {
+                    ...currentState,
+                    ...partial,
+                    providers: mergedProviders,
+                    activeProviderId,
+                };
+            },
         }
     ),
 );

@@ -5,6 +5,7 @@ import { Skeleton } from '../components/Skeleton';
 import { ReminderPanel } from '../features/dashboard/ReminderPanel';
 import { ModuleKpiPanel } from '../features/modules/ModuleKpiPanel';
 import { ModuleRunTable } from '../features/modules/ModuleRunTable';
+import { OutputGeneratorPanel } from '../features/modules/OutputGeneratorPanel';
 import { useModuleDetailQuery } from '../services/api/hooks';
 import type { ModuleId } from '../services/api/types';
 
@@ -55,6 +56,7 @@ export function ModuleDetailPage({ moduleId }: ModuleDetailPageProps) {
 
       {/* Phase 1: local timer reminders — shown only for Deadline Engine */}
       {moduleId === 'deadline-engine' && <ReminderPanel />}
+      {moduleId === 'output-generator' && <OutputGeneratorPanel />}
     </div>
   );
 
