@@ -88,10 +88,16 @@ Implemented capabilities:
 
 [Click to view chat snapshot](./docs/images/chat_2.png) · [Click to view rendered PDF snapshot](./docs/images/report-page1.png)
 
-<p align="center">
-  <img src="./docs/images/chat_2.png" alt="Module2Chat" height="420" />
-  <img src="./docs/images/report-page1.png" alt="Module2PdfPage1" height="420" />
-</p>
+<table align="center">
+  <tr>
+    <td width="72%">
+      <img src="./docs/images/chat_2.png" alt="Module2Chat" width="100%" />
+    </td>
+    <td width="28%">
+      <img src="./docs/images/report-page1.png" alt="Module2PdfPage1" width="100%" />
+    </td>
+  </tr>
+</table>
 
 ---
 

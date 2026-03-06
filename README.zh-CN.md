@@ -88,10 +88,16 @@ EZscholar 的目标是把这些高频痛点收束成一个统一工作流。
 
 [点击查看对话截图](./docs/images/chat_2.png) · [点击查看 PDF 渲染效果](./docs/images/report-page1.png)
 
-<p align="center">
-  <img src="./docs/images/chat_2.png" alt="Module2Chat" height="420" />
-  <img src="./docs/images/report-page1.png" alt="Module2PdfPage1" height="420" />
-</p>
+<table align="center">
+  <tr>
+    <td width="72%">
+      <img src="./docs/images/chat_2.png" alt="Module2Chat" width="100%" />
+    </td>
+    <td width="28%">
+      <img src="./docs/images/report-page1.png" alt="Module2PdfPage1" width="100%" />
+    </td>
+  </tr>
+</table>
 
 ---
 
